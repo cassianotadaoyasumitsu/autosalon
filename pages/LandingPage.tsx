@@ -1,5 +1,6 @@
 import React from 'react';
-import { CheckCircle, MessageCircle, Calendar, Shield, ArrowRight, Star, Users, Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { CheckCircle, MessageCircle, Calendar, Shield, ArrowRight, Star, Users, Sparkles, TrendingUp, Bell, Smartphone, PieChart } from 'lucide-react';
 
 interface LandingPageProps {
   onLogin: () => void;
@@ -40,12 +41,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
             <div className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-serif italic font-bold text-zinc-900 tracking-wide">Perfect Salon</span>
+              <Link to="/" className="text-2xl font-serif italic font-bold text-zinc-900 tracking-wide">Perfect Salon</Link>
             </div>
             <div className="hidden md:flex space-x-10">
-              <a href="#features" className="text-sm uppercase tracking-widest text-stone-500 hover:text-zinc-900 transition-colors">Funcionalidades</a>
-              <a href="#pricing" className="text-sm uppercase tracking-widest text-stone-500 hover:text-zinc-900 transition-colors">Investimento</a>
-              <a href="#testimonials" className="text-sm uppercase tracking-widest text-stone-500 hover:text-zinc-900 transition-colors">Cases</a>
+              <Link to="/features" className="text-sm uppercase tracking-widest text-stone-500 hover:text-zinc-900 transition-colors">Funcionalidades</Link>
+              <Link to="/management" className="text-sm uppercase tracking-widest text-stone-500 hover:text-zinc-900 transition-colors">Gestão</Link>
+              <Link to="/pricing" className="text-sm uppercase tracking-widest text-stone-500 hover:text-zinc-900 transition-colors">Investimento</Link>
             </div>
             <div>
               <button 
@@ -84,9 +85,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
                   Iniciar Experiência
                   <ArrowRight className="ml-3 w-4 h-4" />
                 </button>
-                <button className="inline-flex items-center justify-center px-10 py-4 border border-stone-300 text-sm font-bold uppercase tracking-widest rounded-full text-zinc-900 bg-transparent hover:bg-stone-100 transition-all">
-                  Falar com Consultor
-                </button>
+                <Link to="/features" className="inline-flex items-center justify-center px-10 py-4 border border-stone-300 text-sm font-bold uppercase tracking-widest rounded-full text-zinc-900 bg-transparent hover:bg-stone-100 transition-all">
+                  Saiba Mais
+                </Link>
               </div>
             </div>
             
@@ -122,112 +123,33 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
         </div>
       </div>
 
-      {/* Features - Clean & Minimalist */}
-      <div id="features" className="py-32 bg-white">
+      {/* Features Preview - Short Version for Home */}
+      <div className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-amber-600 text-xs font-bold uppercase tracking-[0.2em] mb-4">Diferenciais</h2>
+            <h2 className="text-amber-600 text-xs font-bold uppercase tracking-[0.2em] mb-4">Destaques</h2>
             <p className="text-4xl font-serif text-zinc-900 mb-6">
-              A excelência que seu salão merece
+              Excelência em cada interação
             </p>
-            <p className="text-stone-500 font-light text-lg">
-              Ferramentas desenhadas para maximizar a eficiência sem sacrificar a elegância do atendimento pessoal.
-            </p>
+            <Link to="/features" className="text-sm font-bold uppercase tracking-widest text-zinc-900 border-b border-zinc-900 pb-1 hover:text-amber-600 hover:border-amber-600 transition-colors">
+               Ver todas as funcionalidades
+            </Link>
           </div>
 
-          <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
             {[
-              {
-                title: 'Concierge Virtual',
-                desc: 'Nossa IA atua como uma recepcionista de luxo no WhatsApp, gerenciando sua agenda 24h por dia.',
-                icon: MessageCircle
-              },
-              {
-                title: 'Gestão de Talentos',
-                desc: 'Sincronização individual para cada especialista da sua equipe, respeitando a autonomia de cada profissional.',
-                icon: Users
-              },
-              {
-                title: 'Jornada do Cliente',
-                desc: 'Lembretes elegantes e solicitações de feedback que fidelizam e encantam sua clientela.',
-                icon: Star
-              },
+              { title: 'Concierge WhatsApp', desc: 'IA que responde 24/7, agenda horários e tira dúvidas.', icon: MessageCircle },
+              { title: 'Multi-Agendas', desc: 'Sincronização individual com Google Calendar para cada especialista.', icon: Calendar },
+              { title: 'Dashboard Financeiro', desc: 'Faturamento estimado e métricas de conversão em tempo real.', icon: TrendingUp },
             ].map((feature, idx) => (
-              <div key={idx} className="group p-8 bg-stone-50 rounded-2xl hover:bg-zinc-900 transition-all duration-500 cursor-default">
-                <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-8 shadow-sm group-hover:bg-white/10 transition-colors">
+              <div key={idx} className="group p-8 bg-stone-50 rounded-2xl border border-stone-100 hover:border-amber-200 hover:shadow-lg transition-all duration-300">
+                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-6 shadow-sm border border-stone-100 group-hover:bg-zinc-900 transition-colors">
                   <feature.icon className="h-6 w-6 text-zinc-900 group-hover:text-amber-400 transition-colors" />
                 </div>
-                <h3 className="text-xl font-serif text-zinc-900 group-hover:text-white mb-4 transition-colors">{feature.title}</h3>
-                <p className="text-stone-600 group-hover:text-stone-400 leading-relaxed font-light transition-colors">{feature.desc}</p>
+                <h3 className="text-lg font-bold font-serif text-zinc-900 mb-3">{feature.title}</h3>
+                <p className="text-stone-600 font-light text-sm leading-relaxed">{feature.desc}</p>
               </div>
             ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Testimonials - Editorial Style */}
-      <div id="testimonials" className="py-32 bg-stone-100 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-20">
-             <h2 className="text-4xl font-serif italic text-zinc-900">"Simplesmente indispensável."</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {testimonials.map((t) => (
-              <div key={t.id} className="bg-white p-10 shadow-xl shadow-stone-200/50 rounded-none border-l-4 border-amber-500">
-                <div className="flex items-center mb-6 text-amber-500">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-current" />
-                  ))}
-                </div>
-                <p className="text-stone-700 mb-8 font-light italic text-lg leading-relaxed">"{t.content}"</p>
-                <div className="flex items-center">
-                  <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full mr-4 grayscale" />
-                  <div>
-                    <h4 className="font-bold text-zinc-900 text-sm uppercase tracking-wider">{t.name}</h4>
-                    <span className="text-xs text-stone-500 tracking-wide">{t.role}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Pricing - Minimalist */}
-      <div id="pricing" className="py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-serif text-zinc-900">Membership</h2>
-            <p className="mt-4 text-stone-500 font-light">Acesso exclusivo à plataforma completa.</p>
-          </div>
-          
-          <div className="max-w-4xl mx-auto bg-zinc-950 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
-             <div className="p-12 md:w-1/2 flex flex-col justify-center border-b md:border-b-0 md:border-r border-white/10">
-                <h3 className="text-amber-500 text-sm font-bold uppercase tracking-[0.2em] mb-2">Perfect Salon Pro</h3>
-                <div className="flex items-baseline text-white mb-6">
-                  <span className="text-6xl font-serif">R$149</span>
-                  <span className="ml-2 text-stone-400 font-light">/mês</span>
-                </div>
-                <p className="text-stone-400 font-light leading-relaxed mb-8">
-                  Tudo o que você precisa para automatizar sua recepção com classe e eficiência.
-                </p>
-                <button 
-                   onClick={onLogin}
-                   className="w-full bg-white text-zinc-950 py-4 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-stone-200 transition-colors"
-                >
-                  Tornar-se Membro
-                </button>
-             </div>
-             <div className="p-12 md:w-1/2 bg-zinc-900">
-                <ul className="space-y-6">
-                  {['Concierge WhatsApp Ilimitado', 'Até 10 Especialistas', 'Integração Google Calendar', 'Suite de Avaliações', 'Notificações Premium'].map((feat) => (
-                    <li key={feat} className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-amber-500 mt-0.5 flex-shrink-0" />
-                      <p className="ml-4 text-stone-300 font-light">{feat}</p>
-                    </li>
-                  ))}
-                </ul>
-             </div>
           </div>
         </div>
       </div>

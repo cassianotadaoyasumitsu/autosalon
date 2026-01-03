@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import LandingPage from './pages/LandingPage';
+import FeaturesPage from './pages/FeaturesPage';
+import ManagementPage from './pages/ManagementPage';
+import PricingPage from './pages/PricingPage';
 import Dashboard from './pages/Dashboard';
 import Connections from './pages/Connections';
 import Professionals from './pages/Professionals';
@@ -67,16 +70,21 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
+        {/* Public Routes */}
         <Route 
           path="/" 
           element={
             isLoggedIn ? <Navigate to="/dashboard" replace /> : <LandingPage onLogin={handleLogin} />
           } 
         />
+        <Route path="/features" element={<FeaturesPage onLogin={handleLogin} />} />
+        <Route path="/management" element={<ManagementPage onLogin={handleLogin} />} />
+        <Route path="/pricing" element={<PricingPage onLogin={handleLogin} />} />
         
         {/* Professional Invite/Setup Route - Public access with token */}
         <Route path="/setup" element={<ProfessionalSetup />} />
 
+        {/* Protected Application Routes */}
         <Route path="/dashboard" element={
           <ProtectedLayout 
             isLoggedIn={isLoggedIn} 
