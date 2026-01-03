@@ -159,7 +159,7 @@ const CalendarView: React.FC = () => {
             className="flex items-center gap-2 bg-zinc-900 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition"
           >
             <Plus className="w-4 h-4" />
-            Novo Agendamento
+            Novo
           </button>
         </div>
 

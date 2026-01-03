@@ -31,7 +31,7 @@ const Services: React.FC = () => {
           </div>
           <button className="flex items-center bg-zinc-900 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition shadow-md">
             <Plus className="w-4 h-4 mr-2" />
-            Adicionar Item
+            Adicionar
           </button>
         </div>
 
