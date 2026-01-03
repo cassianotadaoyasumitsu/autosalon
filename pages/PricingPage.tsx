@@ -51,6 +51,7 @@ const PricingPage: React.FC = () => {
                   Acesso irrestrito a todas as funcionalidades de gestão, automação e inteligência artificial.
                 </p>
                 <button 
+                   type="button"
                    onClick={() => navigate('/signup')}
                    className="w-full bg-zinc-900 text-white py-4 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors shadow-lg"
                 >
@@ -86,8 +87,8 @@ const PricingPage: React.FC = () => {
                   { q: 'Preciso pagar a mais pelo WhatsApp?', a: 'Não. A conexão com o Evolution API está inclusa no plano. Você só precisa manter seu número ativo.' },
                   { q: 'Como funciona o pagamento?', a: 'Trabalhamos com cartão de crédito ou PIX recorrente. A cobrança é automática mensalmente.' },
                   { q: 'Posso adicionar mais profissionais?', a: 'O plano base cobre até 10 profissionais. Para equipes maiores, entre em contato para um plano Enterprise.' },
-                ].map((item, idx) => (
-                   <div key={idx} className="bg-white p-6 rounded-xl border border-stone-200">
+                ].map((item) => (
+                   <div key={item.q} className="bg-white p-6 rounded-xl border border-stone-200">
                       <div className="flex items-start">
                          <HelpCircle className="w-5 h-5 text-amber-500 mt-1 mr-4 flex-shrink-0" />
                          <div>

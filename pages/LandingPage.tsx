@@ -78,6 +78,7 @@ const LandingPage: React.FC = () => {
               </p>
               <div className="mt-10 flex flex-col sm:flex-row gap-4 sm:justify-center lg:justify-start">
                 <button 
+                  type="button"
                   onClick={() => navigate('/login')}
                   className="inline-flex items-center justify-center px-10 py-4 border border-transparent text-sm font-bold uppercase tracking-widest rounded-full text-white bg-zinc-900 hover:bg-zinc-800 shadow-xl transition-all"
                 >
@@ -167,8 +168,8 @@ const LandingPage: React.FC = () => {
                 desc: 'Lembretes automáticos e solicitações de confirmação reduzem drasticamente as faltas.',
                 icon: Bell
               },
-            ].map((feature, idx) => (
-              <div key={idx} className="group p-8 bg-stone-50 rounded-2xl border border-stone-100 hover:border-amber-200 hover:shadow-lg transition-all duration-300">
+            ].map((feature) => (
+              <div key={feature.title} className="group p-8 bg-stone-50 rounded-2xl border border-stone-100 hover:border-amber-200 hover:shadow-lg transition-all duration-300">
                 <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-6 shadow-sm border border-stone-100 group-hover:bg-zinc-900 transition-colors">
                   <feature.icon className="h-6 w-6 text-zinc-900 group-hover:text-amber-400 transition-colors" />
                 </div>
@@ -290,7 +291,7 @@ const LandingPage: React.FC = () => {
               <div key={t.id} className="bg-white p-10 shadow-xl shadow-stone-200/50 rounded-none border-l-4 border-amber-500">
                 <div className="flex items-center mb-6 text-amber-500">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-current" />
+                    <Star key={`${t.id}-star-${i}`} className="w-4 h-4 fill-current" />
                   ))}
                 </div>
                 <p className="text-stone-700 mb-8 font-light italic text-lg leading-relaxed">"{t.content}"</p>
@@ -327,6 +328,7 @@ const LandingPage: React.FC = () => {
                 </p>
                 <div className="flex space-x-4">
                   <button 
+                     type="button"
                      onClick={() => navigate('/signup')}
                      className="flex-1 bg-white text-zinc-950 py-4 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-stone-200 transition-colors"
                   >
