@@ -319,7 +319,7 @@ const LandingPage: React.FC = () => {
              <div className="p-12 md:w-1/2 flex flex-col justify-center border-b md:border-b-0 md:border-r border-white/10">
                 <h3 className="text-amber-500 text-sm font-bold uppercase tracking-[0.2em] mb-2">Perfect Salon Pro</h3>
                 <div className="flex items-baseline text-white mb-6">
-                  <span className="text-6xl font-serif">R$149</span>
+                  <span className="text-6xl font-serif">R$299</span>
                   <span className="ml-2 text-stone-400 font-light">/mês</span>
                 </div>
                 <p className="text-stone-400 font-light leading-relaxed mb-8">
