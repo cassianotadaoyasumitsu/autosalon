@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Lock, Eye, Database } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
-interface PrivacyPageProps {
-  onLogin: () => void;
-}
-
-const PrivacyPage: React.FC<PrivacyPageProps> = ({ onLogin }) => {
+const PrivacyPage: React.FC = () => {
+  const { login } = useAuth();
+  
   return (
     <div className="min-h-screen bg-stone-50 font-sans text-stone-800">
       {/* Navigation */}
@@ -23,7 +22,7 @@ const PrivacyPage: React.FC<PrivacyPageProps> = ({ onLogin }) => {
             </div>
             <div>
               <button 
-                onClick={onLogin}
+                onClick={login}
                 className="bg-zinc-900 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition shadow-lg shadow-zinc-900/10"
               >
                 Area do Cliente

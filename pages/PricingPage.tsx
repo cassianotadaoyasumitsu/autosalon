@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, HelpCircle } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
-interface PricingPageProps {
-  onLogin: () => void;
-}
-
-const PricingPage: React.FC<PricingPageProps> = ({ onLogin }) => {
+const PricingPage: React.FC = () => {
+  const { login } = useAuth();
+  
   return (
     <div className="min-h-screen bg-stone-50 font-sans text-stone-800">
       {/* Navigation */}
@@ -23,7 +22,7 @@ const PricingPage: React.FC<PricingPageProps> = ({ onLogin }) => {
             </div>
             <div>
               <button 
-                onClick={onLogin}
+                onClick={login}
                 className="bg-zinc-900 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition shadow-lg shadow-zinc-900/10"
               >
                 Area do Cliente
@@ -53,7 +52,7 @@ const PricingPage: React.FC<PricingPageProps> = ({ onLogin }) => {
                   Acesso irrestrito a todas as funcionalidades de gestão, automação e inteligência artificial.
                 </p>
                 <button 
-                   onClick={onLogin}
+                   onClick={login}
                    className="w-full bg-zinc-900 text-white py-4 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors shadow-lg"
                 >
                   Assinar Agora

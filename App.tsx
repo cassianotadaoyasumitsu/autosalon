@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Sidebar from './components/Sidebar';
 import LandingPage from './pages/LandingPage';
 import FeaturesPage from './pages/FeaturesPage';
@@ -20,24 +21,17 @@ import { Menu } from 'lucide-react';
 // Define props for ProtectedLayout
 interface ProtectedLayoutProps {
   children: React.ReactNode;
-  isLoggedIn: boolean;
-  onLogout: () => void;
-  sidebarOpen: boolean;
-  setSidebarOpen: (isOpen: boolean) => void;
 }
 
-const ProtectedLayout: React.FC<ProtectedLayoutProps> = ({ 
-  children, 
-  isLoggedIn, 
-  onLogout, 
-  sidebarOpen, 
-  setSidebarOpen 
-}) => {
-  if (!isLoggedIn) return <Navigate to="/" replace />;
+const ProtectedLayout: React.FC<ProtectedLayoutProps> = ({ children }) => {
+  const { isAuthenticated, logout } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  if (!isAuthenticated) return <Navigate to="/" replace />;
 
   return (
     <div className="flex h-screen bg-stone-50 overflow-hidden font-sans text-stone-800">
-      <Sidebar onLogout={onLogout} isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
+      <Sidebar onLogout={logout} isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
       
       <div className="flex-1 flex flex-col overflow-hidden">
          {/* Mobile Header */}
@@ -58,109 +52,48 @@ const ProtectedLayout: React.FC<ProtectedLayoutProps> = ({
   );
 };
 
-const App: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+// Wrapper component to handle redirects based on auth state for public pages
+const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Navigate to="/dashboard" replace /> : <>{children}</>;
+};
 
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-  };
-
+const AppRoutes: React.FC = () => {
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route 
-          path="/" 
-          element={
-            isLoggedIn ? <Navigate to="/dashboard" replace /> : <LandingPage onLogin={handleLogin} />
-          } 
-        />
-        <Route path="/features" element={<FeaturesPage onLogin={handleLogin} />} />
-        <Route path="/management" element={<ManagementPage onLogin={handleLogin} />} />
-        <Route path="/pricing" element={<PricingPage onLogin={handleLogin} />} />
-        <Route path="/privacy" element={<PrivacyPage onLogin={handleLogin} />} />
-        <Route path="/terms" element={<TermsPage onLogin={handleLogin} />} />
-        <Route path="/contact" element={<ContactPage onLogin={handleLogin} />} />
-        
-        {/* Professional Invite/Setup Route - Public access with token */}
-        <Route path="/setup" element={<ProfessionalSetup />} />
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<PublicRoute><LandingPage /></PublicRoute>} />
+      <Route path="/features" element={<PublicRoute><FeaturesPage /></PublicRoute>} />
+      <Route path="/management" element={<PublicRoute><ManagementPage /></PublicRoute>} />
+      <Route path="/pricing" element={<PublicRoute><PricingPage /></PublicRoute>} />
+      <Route path="/privacy" element={<PublicRoute><PrivacyPage /></PublicRoute>} />
+      <Route path="/terms" element={<PublicRoute><TermsPage /></PublicRoute>} />
+      <Route path="/contact" element={<PublicRoute><ContactPage /></PublicRoute>} />
+      
+      {/* Professional Invite/Setup Route - Public access with token */}
+      <Route path="/setup" element={<ProfessionalSetup />} />
 
-        {/* Protected Application Routes */}
-        <Route path="/dashboard" element={
-          <ProtectedLayout 
-            isLoggedIn={isLoggedIn} 
-            onLogout={handleLogout} 
-            sidebarOpen={sidebarOpen} 
-            setSidebarOpen={setSidebarOpen}
-          >
-            <Dashboard />
-          </ProtectedLayout>
-        } />
-        
-        <Route path="/connections" element={
-          <ProtectedLayout 
-            isLoggedIn={isLoggedIn} 
-            onLogout={handleLogout} 
-            sidebarOpen={sidebarOpen} 
-            setSidebarOpen={setSidebarOpen}
-          >
-            <Connections />
-          </ProtectedLayout>
-        } />
-        
-        <Route path="/professionals" element={
-          <ProtectedLayout 
-            isLoggedIn={isLoggedIn} 
-            onLogout={handleLogout} 
-            sidebarOpen={sidebarOpen} 
-            setSidebarOpen={setSidebarOpen}
-          >
-            <Professionals />
-          </ProtectedLayout>
-        } />
-        
-        <Route path="/services" element={
-          <ProtectedLayout 
-            isLoggedIn={isLoggedIn} 
-            onLogout={handleLogout} 
-            sidebarOpen={sidebarOpen} 
-            setSidebarOpen={setSidebarOpen}
-          >
-            <Services />
-          </ProtectedLayout>
-        } />
+      {/* Protected Application Routes */}
+      <Route path="/dashboard" element={<ProtectedLayout><Dashboard /></ProtectedLayout>} />
+      <Route path="/connections" element={<ProtectedLayout><Connections /></ProtectedLayout>} />
+      <Route path="/professionals" element={<ProtectedLayout><Professionals /></ProtectedLayout>} />
+      <Route path="/services" element={<ProtectedLayout><Services /></ProtectedLayout>} />
+      <Route path="/reviews" element={<ProtectedLayout><Reviews /></ProtectedLayout>} />
+      <Route path="/notifications" element={<ProtectedLayout><Notifications /></ProtectedLayout>} />
 
-        <Route path="/reviews" element={
-          <ProtectedLayout 
-            isLoggedIn={isLoggedIn} 
-            onLogout={handleLogout} 
-            sidebarOpen={sidebarOpen} 
-            setSidebarOpen={setSidebarOpen}
-          >
-            <Reviews />
-          </ProtectedLayout>
-        } />
+      {/* Catch all redirect */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+};
 
-        <Route path="/notifications" element={
-          <ProtectedLayout 
-            isLoggedIn={isLoggedIn} 
-            onLogout={handleLogout} 
-            sidebarOpen={sidebarOpen} 
-            setSidebarOpen={setSidebarOpen}
-          >
-            <Notifications />
-          </ProtectedLayout>
-        } />
-
-        {/* Catch all redirect */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+const App: React.FC = () => {
+  return (
+    <AuthProvider>
+      <Router>
+        <AppRoutes />
+      </Router>
+    </AuthProvider>
   );
 };
 

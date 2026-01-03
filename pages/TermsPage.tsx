@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Check, AlertCircle } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
-interface TermsPageProps {
-  onLogin: () => void;
-}
+const TermsPage: React.FC = () => {
+  const { login } = useAuth();
 
-const TermsPage: React.FC<TermsPageProps> = ({ onLogin }) => {
   return (
     <div className="min-h-screen bg-stone-50 font-sans text-stone-800">
       {/* Navigation */}
@@ -23,7 +22,7 @@ const TermsPage: React.FC<TermsPageProps> = ({ onLogin }) => {
             </div>
             <div>
               <button 
-                onClick={onLogin}
+                onClick={login}
                 className="bg-zinc-900 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition shadow-lg shadow-zinc-900/10"
               >
                 Area do Cliente
@@ -97,7 +96,7 @@ const TermsPage: React.FC<TermsPageProps> = ({ onLogin }) => {
             </div>
             <div className="flex space-x-8 text-xs uppercase tracking-widest">
                <Link to="/privacy" className="hover:text-white transition-colors">Privacidade</Link>
-               <Link to="/terms" className="hover:text-white transition-colors text-white font-bold">Termos</Link>
+               <Link to="/terms" className="hover:text-white transition-colors">Termos</Link>
                <Link to="/contact" className="hover:text-white transition-colors">Contato</Link>
             </div>
             <div className="mt-8 md:mt-0 text-xs font-light">

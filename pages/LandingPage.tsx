@@ -1,10 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, MessageCircle, Calendar, Shield, ArrowRight, Star, Users, Sparkles, TrendingUp, Bell, Smartphone, PieChart } from 'lucide-react';
-
-interface LandingPageProps {
-  onLogin: () => void;
-}
+import { useAuth } from '../contexts/AuthContext';
 
 const testimonials = [
   {
@@ -33,7 +30,9 @@ const testimonials = [
   }
 ];
 
-const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
+const LandingPage: React.FC = () => {
+  const { login } = useAuth();
+
   return (
     <div className="min-h-screen bg-stone-50 font-sans text-stone-800">
       {/* Navigation - Linked to dedicated pages */}
@@ -50,7 +49,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
             </div>
             <div>
               <button 
-                onClick={onLogin}
+                onClick={login}
                 className="bg-zinc-900 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition shadow-lg shadow-zinc-900/10"
               >
                 Area do Cliente
@@ -79,7 +78,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
               </p>
               <div className="mt-10 flex flex-col sm:flex-row gap-4 sm:justify-center lg:justify-start">
                 <button 
-                  onClick={onLogin}
+                  onClick={login}
                   className="inline-flex items-center justify-center px-10 py-4 border border-transparent text-sm font-bold uppercase tracking-widest rounded-full text-white bg-zinc-900 hover:bg-zinc-800 shadow-xl transition-all"
                 >
                   Iniciar Experiência
@@ -328,7 +327,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
                 </p>
                 <div className="flex space-x-4">
                   <button 
-                     onClick={onLogin}
+                     onClick={login}
                      className="flex-1 bg-white text-zinc-950 py-4 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-stone-200 transition-colors"
                   >
                     Tornar-se Membro
