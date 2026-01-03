@@ -9,6 +9,7 @@ Perfect Salon is a modern, full-featured management system that helps salon owne
 ## Features
 
 - **Dashboard**: Comprehensive overview of salon operations with analytics and insights
+- **Printable Reports**: Generate and print reports for Weekly, Monthly, Quarterly, Semiannual, and Annual periods. Filter by professional or view overall metrics. Includes charts and detailed metrics.
 - **Google Calendar Integration**: Full calendar view with create, edit, and delete appointments. Syncs with Google Calendar (mock implementation ready for backend integration)
 - **WhatsApp Integration**: Schedule appointments and communicate with clients via WhatsApp
 - **Professional Management**: Manage salon professionals, their schedules, and availability
@@ -111,12 +112,14 @@ npm run preview
 ```
 autosalon/
 ├── components/          # Reusable React components
-│   └── Sidebar.tsx     # Navigation sidebar component
+│   ├── Sidebar.tsx     # Navigation sidebar component
+│   ├── ReportModal.tsx # Report generation modal
+│   └── ReportView.tsx   # Print-ready report view
 ├── contexts/           # React context providers
 │   └── AuthContext.tsx # Authentication context
 ├── pages/              # Page components
 │   ├── LandingPage.tsx
-│   ├── Dashboard.tsx
+│   ├── Dashboard.tsx    # Main dashboard with reports
 │   ├── CalendarView.tsx # Google Calendar integration
 │   ├── Connections.tsx  # Integration management
 │   ├── Professionals.tsx
@@ -132,8 +135,11 @@ autosalon/
 │   ├── PrivacyPage.tsx
 │   ├── TermsPage.tsx
 │   └── ContactPage.tsx
+├── public/             # Static assets (served as-is)
+│   └── images/         # Image files
 ├── services/           # API service layers
-│   └── calendarApi.ts  # Google Calendar API service (mock)
+│   ├── calendarApi.ts  # Google Calendar API service (mock)
+│   └── reportService.ts # Report generation service (mock)
 ├── App.tsx             # Main application component with routing
 ├── index.tsx           # Application entry point
 ├── types.ts            # TypeScript type definitions
@@ -189,6 +195,56 @@ Access the calendar via:
 - Connections page → "Ver Calendário" (when connected)
 
 **Note**: Currently using mock data stored in localStorage. When backend is implemented, appointments will sync with Google Calendar via the Google Calendar API.
+
+## Printable Reports
+
+The Dashboard includes a comprehensive reporting system that allows you to generate and print detailed reports:
+
+- **Report Periods**: Choose from Weekly, Monthly, Quarterly, Semiannual, or Annual periods
+- **Professional Filtering**: Generate reports for all professionals or filter by a specific professional
+- **Report Contents**:
+  - Header with salon name, report period, and generation date
+  - Key metrics (Appointments, Estimated Revenue, AI Conversion Rate)
+  - Financial Performance chart (revenue trends)
+  - Client Volume chart (appointment trends)
+  - Status summary
+  - Footer with additional information
+
+**How to Generate Reports:**
+1. Navigate to the Dashboard
+2. Click the "Imprimir Relatório" (Print Report) button in the header
+3. Select the desired period (Weekly, Monthly, Quarterly, Semiannual, or Annual)
+4. Choose a professional filter ("Todos" for overall or a specific professional)
+5. Click "Gerar Relatório" (Generate Report)
+6. The report will open in a print-ready view and automatically trigger the browser's print dialog
+
+**Print Features:**
+- Optimized A4 format layout
+- Print-specific CSS styling
+- Charts rendered for printing
+- Professional formatting suitable for business documentation
+- Can be saved as PDF directly from the browser print dialog
+
+**Note**: Reports currently use mock data. When backend is implemented, reports will pull real-time data from the database.
+
+## Static Assets
+
+Static assets (images, fonts, etc.) should be placed in the `public/` directory. Files in `public/` are served at the root path.
+
+### Using Images
+
+1. Place images in `public/images/`
+2. Reference them with absolute paths starting with `/`:
+
+```tsx
+// ✅ Correct
+<img src="/images/picture.png" alt="Description" />
+
+// ❌ Incorrect
+<img src="images/picture.png" alt="Description" />
+```
+
+For more details on handling static assets, see `STATIC_ASSETS.md`.
 
 ## Browser Support
 
