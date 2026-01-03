@@ -4,7 +4,14 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
+    
+    // Base path para GitHub Pages (nome do repositório)
+    // Se o repositório for username.github.io, use base: '/'
+    // Caso contrário, use base: '/nome-do-repositorio/'
+    const base = process.env.GITHUB_PAGES ? '/autosalon/' : '/';
+    
     return {
+      base,
       server: {
         port: 3000,
         host: '0.0.0.0',
