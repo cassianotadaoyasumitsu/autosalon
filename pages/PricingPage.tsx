@@ -1,10 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { CheckCircle, HelpCircle } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
 
 const PricingPage: React.FC = () => {
-  const { login } = useAuth();
+  const navigate = useNavigate();
   
   return (
     <div className="min-h-screen bg-stone-50 font-sans text-stone-800">
@@ -21,12 +20,12 @@ const PricingPage: React.FC = () => {
               <Link to="/pricing" className="text-sm uppercase tracking-widest text-zinc-900 border-b-2 border-amber-500 pb-1">Investimento</Link>
             </div>
             <div>
-              <button 
-                onClick={login}
-                className="bg-zinc-900 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition shadow-lg shadow-zinc-900/10"
+              <Link 
+                to="/login"
+                className="bg-zinc-900 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition shadow-lg shadow-zinc-900/10 inline-block"
               >
                 Area do Cliente
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -52,7 +51,7 @@ const PricingPage: React.FC = () => {
                   Acesso irrestrito a todas as funcionalidades de gestão, automação e inteligência artificial.
                 </p>
                 <button 
-                   onClick={login}
+                   onClick={() => navigate('/signup')}
                    className="w-full bg-zinc-900 text-white py-4 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors shadow-lg"
                 >
                   Assinar Agora

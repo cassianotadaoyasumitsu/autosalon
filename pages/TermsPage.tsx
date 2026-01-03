@@ -1,10 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Check, AlertCircle } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
 
 const TermsPage: React.FC = () => {
-  const { login } = useAuth();
 
   return (
     <div className="min-h-screen bg-stone-50 font-sans text-stone-800">
@@ -21,12 +19,12 @@ const TermsPage: React.FC = () => {
               <Link to="/pricing" className="text-sm uppercase tracking-widest text-stone-500 hover:text-zinc-900 transition-colors">Investimento</Link>
             </div>
             <div>
-              <button 
-                onClick={login}
-                className="bg-zinc-900 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition shadow-lg shadow-zinc-900/10"
+              <Link 
+                to="/login"
+                className="bg-zinc-900 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition shadow-lg shadow-zinc-900/10 inline-block"
               >
                 Area do Cliente
-              </button>
+              </Link>
             </div>
           </div>
         </div>

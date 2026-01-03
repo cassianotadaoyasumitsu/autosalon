@@ -9,6 +9,8 @@ import PricingPage from './pages/PricingPage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import ContactPage from './pages/ContactPage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 import Dashboard from './pages/Dashboard';
 import Connections from './pages/Connections';
 import Professionals from './pages/Professionals';
@@ -69,6 +71,8 @@ const AppRoutes: React.FC = () => {
       <Route path="/privacy" element={<PublicRoute><PrivacyPage /></PublicRoute>} />
       <Route path="/terms" element={<PublicRoute><TermsPage /></PublicRoute>} />
       <Route path="/contact" element={<PublicRoute><ContactPage /></PublicRoute>} />
+      <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+      <Route path="/signup" element={<PublicRoute><SignupPage /></PublicRoute>} />
       
       {/* Professional Invite/Setup Route - Public access with token */}
       <Route path="/setup" element={<ProfessionalSetup />} />
