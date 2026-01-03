@@ -5,6 +5,9 @@ import LandingPage from './pages/LandingPage';
 import FeaturesPage from './pages/FeaturesPage';
 import ManagementPage from './pages/ManagementPage';
 import PricingPage from './pages/PricingPage';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
+import ContactPage from './pages/ContactPage';
 import Dashboard from './pages/Dashboard';
 import Connections from './pages/Connections';
 import Professionals from './pages/Professionals';
@@ -80,6 +83,9 @@ const App: React.FC = () => {
         <Route path="/features" element={<FeaturesPage onLogin={handleLogin} />} />
         <Route path="/management" element={<ManagementPage onLogin={handleLogin} />} />
         <Route path="/pricing" element={<PricingPage onLogin={handleLogin} />} />
+        <Route path="/privacy" element={<PrivacyPage onLogin={handleLogin} />} />
+        <Route path="/terms" element={<TermsPage onLogin={handleLogin} />} />
+        <Route path="/contact" element={<ContactPage onLogin={handleLogin} />} />
         
         {/* Professional Invite/Setup Route - Public access with token */}
         <Route path="/setup" element={<ProfessionalSetup />} />

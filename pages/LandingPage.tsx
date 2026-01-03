@@ -161,9 +161,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
                <span className="text-2xl font-serif italic text-white">Perfect Salon</span>
             </div>
             <div className="flex space-x-8 text-xs uppercase tracking-widest">
-               <a href="#" className="hover:text-white transition-colors">Privacidade</a>
-               <a href="#" className="hover:text-white transition-colors">Termos</a>
-               <a href="#" className="hover:text-white transition-colors">Contato</a>
+               <Link to="/privacy" className="hover:text-white transition-colors">Privacidade</Link>
+               <Link to="/terms" className="hover:text-white transition-colors">Termos</Link>
+               <Link to="/contact" className="hover:text-white transition-colors">Contato</Link>
             </div>
             <div className="mt-8 md:mt-0 text-xs font-light">
               &copy; 2024 Perfect Salon. Excellence in Management.
