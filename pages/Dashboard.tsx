@@ -1,6 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { Calendar, DollarSign, MessageCircle, CheckCircle2, ArrowUpRight, Users, Filter } from 'lucide-react';
+import { Calendar, DollarSign, MessageCircle, CheckCircle2, ArrowUpRight, Users, Filter, Printer } from 'lucide-react';
+import ReportModal from '../components/ReportModal';
+import ReportView from '../components/ReportView';
+import { reportService, ReportPeriod, ReportData } from '../services/reportService';
 
 // Mock Data for specific professionals to simulate filtering
 const PROFESSIONALS = [
@@ -22,6 +25,9 @@ const generateData = (factor: number) => [
 
 const Dashboard: React.FC = () => {
   const [selectedPro, setSelectedPro] = useState('all');
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [reportData, setReportData] = useState<ReportData | null>(null);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
   // Logic to simulate different data based on selection
   const dashboardData = useMemo(() => {
@@ -66,6 +72,23 @@ const Dashboard: React.FC = () => {
     };
   }, [selectedPro]);
 
+  const handleGenerateReport = async (periodType: ReportPeriod['type'], professionalId: string) => {
+    setIsGeneratingReport(true);
+    try {
+      const data = await reportService.generateReport(periodType, professionalId);
+      setReportData(data);
+    } catch (error) {
+      console.error('Erro ao gerar relatório:', error);
+      alert('Erro ao gerar relatório. Tente novamente.');
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
+
+  const handleCloseReport = () => {
+    setReportData(null);
+  };
+
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Header & Filter */}
@@ -97,6 +120,16 @@ const Dashboard: React.FC = () => {
               <Filter className="h-3 w-3 text-stone-400" />
             </div>
           </div>
+
+          {/* Print Report Button */}
+          <button
+            type="button"
+            onClick={() => setIsReportModalOpen(true)}
+            className="flex items-center gap-2 bg-white border border-stone-200 text-zinc-900 px-4 py-2.5 rounded-lg text-sm font-medium shadow-sm hover:bg-stone-50 transition-colors"
+          >
+            <Printer className="w-4 h-4" />
+            <span className="hidden md:inline">Imprimir Relatório</span>
+          </button>
 
           <div className="hidden md:flex items-center space-x-2 text-sm bg-zinc-900 text-white px-4 py-2.5 rounded-lg shadow-md">
              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
@@ -231,6 +264,32 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Report Modal */}
+      <ReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        onGenerate={handleGenerateReport}
+        currentProfessionalId={selectedPro}
+      />
+
+      {/* Report View */}
+      {reportData && (
+        <ReportView
+          reportData={reportData}
+          onClose={handleCloseReport}
+        />
+      )}
+
+      {/* Loading overlay */}
+      {isGeneratingReport && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-8 text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-zinc-900 mx-auto mb-4"></div>
+            <p className="text-zinc-900 font-medium">Gerando relatório...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
