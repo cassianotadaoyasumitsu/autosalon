@@ -35,7 +35,7 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
+        run: NODE_ENV=production GITHUB_PAGES=true npm run build
         env:
           # Variáveis de ambiente para o build
           # Você pode adicionar secrets do GitHub se necessário

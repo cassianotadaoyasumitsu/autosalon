@@ -320,7 +320,7 @@ const LandingPage: React.FC = () => {
              </div>
              <div className="p-12 md:w-1/2 bg-zinc-900">
                 <ul className="space-y-6">
-                  {['Concierge WhatsApp Ilimitado', 'Até 10 Especialistas', 'Integração Google Calendar', 'Suite de Avaliações', 'Notificações Premium'].map((feat) => (
+                  {['Concierge WhatsApp Ilimitado', 'Até 6 Especialistas', 'Integração Google Calendar', 'Suite de Avaliações', 'Notificações Premium'].map((feat) => (
                     <li key={feat} className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-amber-500 mt-0.5 flex-shrink-0" />
                       <p className="ml-4 text-stone-300 font-light">{feat}</p>

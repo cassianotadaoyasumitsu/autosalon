@@ -44,7 +44,7 @@ const PricingPage: React.FC = () => {
                 <ul className="space-y-6">
                   {[
                     'Conexão WhatsApp Business API',
-                    'Até 10 Profissionais/Agendas',
+                    'Até 6 Profissionais/Agendas',
                     'Sincronização Google Calendar',
                     'Dashboard Avançado',
                     'Sistema de Avaliação de Clientes',
@@ -66,7 +66,7 @@ const PricingPage: React.FC = () => {
                 {[
                   { q: 'Preciso pagar a mais pelo WhatsApp?', a: 'Não. A conexão com o Evolution API está inclusa no plano. Você só precisa manter seu número ativo.' },
                   { q: 'Como funciona o pagamento?', a: 'Trabalhamos com cartão de crédito ou PIX recorrente. A cobrança é automática mensalmente.' },
-                  { q: 'Posso adicionar mais profissionais?', a: 'O plano base cobre até 10 profissionais. Para equipes maiores, entre em contato para um plano Enterprise.' },
+                  { q: 'Posso adicionar mais profissionais?', a: 'O plano base cobre até 6 profissionais. Para equipes maiores, entre em contato para um plano Enterprise.' },
                 ].map((item) => (
                    <div key={item.q} className="bg-white p-6 rounded-xl border border-stone-200">
                       <div className="flex items-start">

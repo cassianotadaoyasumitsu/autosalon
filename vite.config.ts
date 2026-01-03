@@ -5,19 +5,23 @@ import react from '@vitejs/plugin-react';
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     
-    // Base path para GitHub Pages (nome do repositório)
-    // Se o repositório for username.github.io, use base: '/'
-    // Caso contrário, use base: '/nome-do-repositorio/'
-    // Para produção no GitHub Pages, sempre usar /autosalon/
-    // Durante 'npm run build', o Vite sempre usa mode: 'production'
-    // Para desenvolvimento local, usar '/' para facilitar testes
+    // Base path configuration
+    // - Vercel: sempre usar '/' (detectado via VERCEL env var)
+    // - GitHub Pages: usar '/autosalon/' quando GITHUB_PAGES=true
+    // - Desenvolvimento local: usar '/' para facilitar testes
+    const isVercel = process.env.VERCEL === '1' || process.env.VERCEL === 'true';
     const githubPagesEnv = process.env.GITHUB_PAGES || env.GITHUB_PAGES || '';
-    const isProduction = mode === 'production';
-    const githubPages = githubPagesEnv === 'true' || githubPagesEnv === '1';
+    const githubPages = githubPagesEnv === 'true' || githubPagesEnv === '1' || githubPagesEnv === true;
     
-    // Sempre usar /autosalon/ para builds de produção (GitHub Pages)
-    // Em desenvolvimento, usar '/' para facilitar testes locais
-    const base = (isProduction || githubPages) ? '/autosalon/' : '/';
+    // Vercel sempre usa base: '/'
+    // GitHub Pages usa '/autosalon/' quando configurado
+    // Desenvolvimento local usa '/'
+    const base = isVercel ? '/' : (githubPages ? '/autosalon/' : '/');
+    
+    // Log para debug
+    if (process.env.NODE_ENV === 'production') {
+      console.log(`[Vite Config] Building for ${isVercel ? 'Vercel' : githubPages ? 'GitHub Pages' : 'production'} with base: ${base}`);
+    }
     
     return {
       base,
