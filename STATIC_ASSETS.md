@@ -104,17 +104,14 @@ Para imagens hospedadas externamente (Unsplash, CDN, etc.), use URLs completas:
 
 Quando você faz o build do projeto (`npm run build`), os arquivos em `public/` são copiados para `dist/` mantendo a estrutura de pastas.
 
-Para GitHub Pages, certifique-se de que o `base` no `vite.config.ts` está configurado corretamente:
+O `base` no `vite.config.ts` está sempre configurado como `/`:
 
 ```typescript
-const base = process.env.GITHUB_PAGES ? '/autosalon/' : '/';
+const base = '/';
 ```
 
-Se o base for `/autosalon/`, as imagens devem ser referenciadas como:
-- `/autosalon/images/picture.png` (em produção)
-- `/images/picture.png` (em desenvolvimento)
-
-Ou use variáveis de ambiente para gerenciar isso dinamicamente.
+As imagens devem ser referenciadas sempre com caminhos absolutos começando com `/`:
+- `/images/picture.png` (funciona em desenvolvimento e produção)
 
 ## Troubleshooting
 
@@ -124,9 +121,10 @@ Ou use variáveis de ambiente para gerenciar isso dinamicamente.
 2. Verifique se o caminho no código começa com `/`
 3. Reinicie o servidor de desenvolvimento (`npm run dev`)
 
-### Erro 404 em Produção (GitHub Pages)
+### Erro 404 em Produção (Vercel)
 
-1. Verifique o `base` no `vite.config.ts`
+1. Verifique o `base` no `vite.config.ts` (deve ser `/`)
+2. Limpe o cache do navegador ou faça hard refresh
 2. Verifique se os arquivos foram copiados para `dist/images/` após o build
 3. Verifique se o caminho inclui o prefixo do base path se necessário
 

@@ -68,16 +68,10 @@ Failed to load resource: the server responded with a status of 404 (/images/pict
    <img src="./images/picture.png" alt="Descrição" />
    ```
 
-3. **Para GitHub Pages (com base path):**
-   Se você está usando GitHub Pages com base path `/autosalon/`, pode precisar usar:
+3. **Para produção (Vercel):**
+   O Vite resolve automaticamente os caminhos. Use sempre caminhos absolutos começando com `/`:
    ```tsx
-   // Em desenvolvimento
    <img src="/images/picture.png" alt="Descrição" />
-   
-   // Em produção (se base path for /autosalon/)
-   // O Vite deve resolver automaticamente, mas se não funcionar:
-   const basePath = import.meta.env.BASE_URL || '';
-   <img src={`${basePath}images/picture.png`} alt="Descrição" />
    ```
 
 ### Problema 3: Scripts ou módulos não encontrados
@@ -101,7 +95,7 @@ Problema com o entry point ou configuração do Vite.
 2. **Verificar `vite.config.ts`:**
    ```typescript
    export default defineConfig({
-     base: process.env.GITHUB_PAGES ? '/autosalon/' : '/',
+     base: '/',
      // ...
    });
    ```
@@ -128,27 +122,29 @@ Verifique o `index.html`:
 
 Se o problema persistir, pode ser bloqueio de rede/firewall.
 
-### Problema 5: Assets em produção (GitHub Pages)
+### Problema 5: Assets em produção (Vercel)
 
 **Sintoma:**
 Recursos funcionam em desenvolvimento mas não em produção.
 
 **Causa:**
-Base path não configurado corretamente.
+Base path não configurado corretamente ou cache do navegador.
 
 **Solução:**
 
 1. **Verificar `vite.config.ts`:**
    ```typescript
-   const base = process.env.GITHUB_PAGES ? '/autosalon/' : '/';
+   export default defineConfig({
+     base: '/',
+     // ...
+   });
    ```
 
-2. **Verificar variável de ambiente no GitHub Actions:**
-   ```yaml
-   # .github/workflows/deploy.yml
-   env:
-     GITHUB_PAGES: true
-   ```
+2. **Limpar cache do navegador** ou fazer hard refresh (Ctrl+Shift+R / Cmd+Shift+R)
+
+3. **Verificar se o build está gerando os caminhos corretos:**
+   - Execute `npm run build` localmente
+   - Verifique o `dist/index.html` - os assets devem estar em `/assets/...`
 
 3. **Verificar se o build está usando o base correto:**
    ```bash
@@ -242,5 +238,5 @@ Se nenhuma das soluções acima funcionar:
 
 - [Vite Static Asset Handling](https://vitejs.dev/guide/assets.html)
 - [Vite Base Path Configuration](https://vitejs.dev/config/shared-options.html#base)
-- [GitHub Pages Deployment](https://docs.github.com/en/pages/getting-started-with-github-pages)
+- [Vercel Deployment](https://vercel.com/docs)
 

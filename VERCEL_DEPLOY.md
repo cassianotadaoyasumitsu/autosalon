@@ -60,10 +60,9 @@ Já está configurado com:
 
 ### `vite.config.ts`
 
-Configurado para detectar automaticamente o Vercel:
-- Quando `VERCEL=1`, usa `base: '/'`
-- Quando `GITHUB_PAGES=true`, usa `base: '/autosalon/'`
-- Em desenvolvimento local, usa `base: '/'`
+Configurado para usar sempre `base: '/'`:
+- Sempre usa `base: '/'` (Vercel, desenvolvimento local, produção)
+- Não precisa de configuração adicional
 
 ## 🔄 Deploy Automático
 
