@@ -246,6 +246,23 @@ Static assets (images, fonts, etc.) should be placed in the `public/` directory.
 
 For more details on handling static assets, see `STATIC_ASSETS.md`.
 
+## Troubleshooting
+
+### Common 404 Errors
+
+If you encounter 404 errors, check the `TROUBLESHOOTING_404.md` guide for detailed solutions. Common issues include:
+
+- **CSS not loading**: Check if dependencies are installed correctly
+- **Images not found**: Verify paths use absolute paths starting with `/`
+- **Production build issues**: Check base path configuration in `vite.config.ts`
+
+Quick checklist:
+1. Open DevTools → Network tab
+2. Identify the resource returning 404
+3. Verify the file exists at the expected location
+4. Check if the path in code is correct (absolute paths recommended)
+5. Verify base path configuration for production builds
+
 ## Browser Support
 
 The application supports modern browsers including:

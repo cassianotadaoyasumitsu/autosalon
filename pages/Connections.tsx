@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback, useId } from 'react';
+import type React from 'react';
+import { useState, useEffect, useCallback, useId } from 'react';
 import { Smartphone, Calendar, CheckCircle, XCircle, QrCode, Key, Server, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ConnectionStatus } from '../types';

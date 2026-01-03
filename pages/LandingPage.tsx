@@ -1,7 +1,6 @@
-import React from 'react';
+import type React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { CheckCircle, MessageCircle, Calendar, Shield, ArrowRight, Star, Users, Sparkles, TrendingUp, Bell, Smartphone, PieChart } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { CheckCircle, MessageCircle, Calendar, ArrowRight, Star, Users, Sparkles, TrendingUp, Bell, Smartphone, PieChart } from 'lucide-react';
 
 const testimonials = [
   {
