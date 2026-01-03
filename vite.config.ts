@@ -9,16 +9,20 @@ export default defineConfig(({ mode }) => {
     // - Por padrão: sempre usar '/' (Vercel, desenvolvimento local, etc.)
     // - GitHub Pages: usar '/autosalon/' APENAS quando GITHUB_PAGES=true explicitamente
     // - O Vercel sempre usa base: '/' (não precisa de subdiretório)
+    // - Verificar se está no Vercel primeiro (VERCEL env var)
+    const isVercel = process.env.VERCEL === '1' || process.env.VERCEL === 'true';
     const githubPagesEnv = process.env.GITHUB_PAGES || env.GITHUB_PAGES || '';
-    const githubPages = githubPagesEnv === 'true' || githubPagesEnv === '1';
+    const githubPages = !isVercel && (githubPagesEnv === 'true' || githubPagesEnv === '1');
     
-    // Por padrão sempre usar '/' (Vercel, desenvolvimento, etc.)
-    // Só usar '/autosalon/' quando explicitamente configurado para GitHub Pages
+    // Vercel sempre usa '/' (ignora GITHUB_PAGES se estiver setado)
+    // GitHub Pages usa '/autosalon/' quando GITHUB_PAGES=true E não estiver no Vercel
+    // Por padrão sempre usar '/' (desenvolvimento, etc.)
     const base = githubPages ? '/autosalon/' : '/';
     
     // Log para debug
     if (process.env.NODE_ENV === 'production') {
-      console.log(`[Vite Config] Building for ${githubPages ? 'GitHub Pages' : 'Vercel/Production'} with base: ${base}`);
+      console.log(`[Vite Config] Building for ${isVercel ? 'Vercel' : githubPages ? 'GitHub Pages' : 'Production'} with base: ${base}`);
+      console.log(`[Vite Config] Env vars - VERCEL: ${process.env.VERCEL}, GITHUB_PAGES: ${githubPagesEnv}, isVercel: ${isVercel}, githubPages: ${githubPages}`);
     }
     
     return {

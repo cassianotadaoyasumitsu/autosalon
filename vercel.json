@@ -4,6 +4,9 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "vite",
+  "env": {
+    "VERCEL": "1"
+  },
   "rewrites": [
     {
       "source": "/(.*)",
