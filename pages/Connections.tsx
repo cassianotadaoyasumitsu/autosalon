@@ -1,15 +1,52 @@
-import React, { useState } from 'react';
-import { Smartphone, Calendar, RefreshCw, CheckCircle, XCircle, QrCode, Key, Server, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useId } from 'react';
+import { Smartphone, Calendar, CheckCircle, XCircle, QrCode, Key, Server, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { ConnectionStatus } from '../types';
+import { calendarApi } from '../services/calendarApi';
 
 const Connections: React.FC = () => {
+  const navigate = useNavigate();
+  const instanceNameId = useId();
+  const apiKeyId = useId();
   const [waStatus, setWaStatus] = useState<ConnectionStatus>(ConnectionStatus.CONNECTED);
   const [calStatus, setCalStatus] = useState<ConnectionStatus>(ConnectionStatus.DISCONNECTED);
+  const [calendarEmail, setCalendarEmail] = useState<string | null>(null);
   
   // Security Improvement: Initialize with empty strings, never hardcode secrets in source
   const [instanceName, setInstanceName] = useState('');
   const [apiKey, setApiKey] = useState('');
   const [showApiKey, setShowApiKey] = useState(false);
+
+  const checkCalendarStatus = useCallback(async () => {
+    const connected = await calendarApi.isConnected();
+    setCalStatus(connected ? ConnectionStatus.CONNECTED : ConnectionStatus.DISCONNECTED);
+    if (connected) {
+      setCalendarEmail(calendarApi.getConnectedEmail());
+    }
+  }, []);
+
+  useEffect(() => {
+    // Verificar status da conexão do calendário
+    checkCalendarStatus();
+  }, [checkCalendarStatus]);
+
+  const handleCalendarConnect = async () => {
+    try {
+      await calendarApi.connect();
+      await checkCalendarStatus();
+    } catch (error) {
+      console.error('Erro ao conectar calendário:', error);
+    }
+  };
+
+  const handleCalendarDisconnect = async () => {
+    try {
+      await calendarApi.disconnect();
+      await checkCalendarStatus();
+    } catch (error) {
+      console.error('Erro ao desconectar calendário:', error);
+    }
+  };
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto animate-fade-in">
@@ -39,8 +76,9 @@ const Connections: React.FC = () => {
           </div>
           <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Nome da Instância</label>
+              <label htmlFor={instanceNameId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Nome da Instância</label>
               <input
+                id={instanceNameId}
                 type="text"
                 value={instanceName}
                 onChange={(e) => setInstanceName(e.target.value)}
@@ -50,9 +88,10 @@ const Connections: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">API Key (Global)</label>
+              <label htmlFor={apiKeyId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">API Key (Global)</label>
               <div className="relative">
                 <input
+                  id={apiKeyId}
                   type={showApiKey ? "text" : "password"}
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
@@ -109,6 +148,7 @@ const Connections: React.FC = () => {
                     Token de sessão único. Válido por 30 segundos.
                   </p>
                   <button 
+                    type="button"
                     onClick={() => setWaStatus(ConnectionStatus.CONNECTED)}
                     className="bg-zinc-900 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition"
                   >
@@ -125,6 +165,7 @@ const Connections: React.FC = () => {
                     <p className="text-sm text-stone-500 mt-2 font-light">Sessão criptografada ponta-a-ponta.</p>
                   </div>
                   <button 
+                    type="button"
                     onClick={() => setWaStatus(ConnectionStatus.DISCONNECTED)}
                     className="text-red-800 text-xs font-bold uppercase tracking-widest hover:text-red-900 border-b border-red-200 pb-1"
                   >
@@ -155,18 +196,43 @@ const Connections: React.FC = () => {
                </p>
                
                {calStatus === ConnectionStatus.DISCONNECTED ? (
-                 <button 
-                   onClick={() => setCalStatus(ConnectionStatus.CONNECTED)}
-                   className="flex items-center bg-white border border-stone-300 text-zinc-900 px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-stone-50 transition shadow-sm"
-                 >
-                   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png" className="w-4 h-4 mr-3" alt="Google" />
-                   Autorizar Acesso
-                 </button>
+                 <>
+                   <button 
+                     type="button"
+                     onClick={handleCalendarConnect}
+                     className="flex items-center bg-white border border-stone-300 text-zinc-900 px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-stone-50 transition shadow-sm"
+                   >
+                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png" className="w-4 h-4 mr-3" alt="Google" />
+                     Autorizar Acesso
+                   </button>
+                   <p className="text-xs text-stone-400 text-center max-w-xs">
+                     Ao conectar, você poderá visualizar e gerenciar seus agendamentos diretamente no calendário.
+                   </p>
+                 </>
                ) : (
-                  <div className="bg-stone-50 border border-stone-200 rounded-lg p-6 w-full text-center">
-                    <RefreshCw className="w-6 h-6 text-amber-500 mx-auto mb-3 animate-spin-slow" />
-                    <p className="text-sm font-bold text-zinc-900">Sincronização Ativa</p>
-                    <p className="text-xs text-stone-500 mt-1 font-mono">ID: salaoprincipal@gmail.com</p>
+                  <div className="w-full space-y-4">
+                    <div className="bg-stone-50 border border-stone-200 rounded-lg p-6 text-center">
+                      <CheckCircle className="w-8 h-8 text-zinc-900 mx-auto mb-3" />
+                      <p className="text-sm font-bold text-zinc-900">Sincronização Ativa</p>
+                      <p className="text-xs text-stone-500 mt-1 font-mono">{calendarEmail || 'salaoprincipal@gmail.com'}</p>
+                    </div>
+                    <div className="flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() => navigate('/calendar')}
+                        className="flex-1 bg-zinc-900 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition flex items-center justify-center gap-2"
+                      >
+                        <Calendar className="w-4 h-4" />
+                        Ver Calendário
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleCalendarDisconnect}
+                        className="px-6 py-3 text-red-600 border border-red-200 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-red-50 transition"
+                      >
+                        Desconectar
+                      </button>
+                    </div>
                   </div>
                )}
             </div>

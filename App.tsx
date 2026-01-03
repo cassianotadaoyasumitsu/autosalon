@@ -18,6 +18,7 @@ import Services from './pages/Services';
 import Reviews from './pages/Reviews';
 import Notifications from './pages/Notifications';
 import ProfessionalSetup from './pages/ProfessionalSetup';
+import CalendarView from './pages/CalendarView';
 import { Menu } from 'lucide-react';
 
 // Define props for ProtectedLayout
@@ -84,6 +85,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/services" element={<ProtectedLayout><Services /></ProtectedLayout>} />
       <Route path="/reviews" element={<ProtectedLayout><Reviews /></ProtectedLayout>} />
       <Route path="/notifications" element={<ProtectedLayout><Notifications /></ProtectedLayout>} />
+      <Route path="/calendar" element={<ProtectedLayout><CalendarView /></ProtectedLayout>} />
 
       {/* Catch all redirect */}
       <Route path="*" element={<Navigate to="/" replace />} />

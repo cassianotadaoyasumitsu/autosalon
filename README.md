@@ -9,12 +9,14 @@ Perfect Salon is a modern, full-featured management system that helps salon owne
 ## Features
 
 - **Dashboard**: Comprehensive overview of salon operations with analytics and insights
+- **Google Calendar Integration**: Full calendar view with create, edit, and delete appointments. Syncs with Google Calendar (mock implementation ready for backend integration)
 - **WhatsApp Integration**: Schedule appointments and communicate with clients via WhatsApp
 - **Professional Management**: Manage salon professionals, their schedules, and availability
 - **Service Configuration**: Create and manage salon services with pricing and duration
 - **Customer Reviews**: Collect and manage customer feedback and ratings
-- **Connections**: Manage client relationships and contact information
+- **Connections**: Manage integrations (WhatsApp, Google Calendar) and API keys
 - **Notifications**: Stay updated with important alerts and reminders
+- **Authentication**: Login and signup with email/password or Google OAuth
 - **Responsive Design**: Fully responsive interface that works on desktop and mobile devices
 
 ## Tech Stack
@@ -25,6 +27,8 @@ Perfect Salon is a modern, full-featured management system that helps salon owne
 - **React Router DOM** - Client-side routing
 - **Lucide React** - Icon library
 - **Recharts** - Data visualization and charts
+- **React Big Calendar** - Calendar component for appointments
+- **Moment.js** - Date manipulation and formatting
 - **Tailwind CSS** - Utility-first CSS framework
 
 ## Prerequisites
@@ -48,11 +52,25 @@ npm install
 ```
 
 3. (Optional) Set up environment variables:
-   - Create a `.env.local` file in the root directory
-   - Add your `GEMINI_API_KEY` if you plan to use Gemini API features:
+   - Copy `env.example` to `.env.local`
+   - Fill in the values as needed:
 ```bash
-GEMINI_API_KEY=your_api_key_here
+cp env.example .env.local
 ```
+
+   **Frontend Environment Variables:**
+   - `VITE_API_BASE_URL` - Backend API URL (when backend is ready)
+   - `VITE_GOOGLE_CLIENT_ID` - Google OAuth Client ID (for Google login and Calendar)
+   - `VITE_ENVIRONMENT` - Environment (development/staging/production)
+   
+   **Backend Environment Variables** (when backend is implemented):
+   - `GOOGLE_CLIENT_ID` - Google OAuth Client ID
+   - `GOOGLE_CLIENT_SECRET` - Google OAuth Client Secret
+   - `GOOGLE_CALENDAR_SCOPES` - Calendar API scopes
+   - `GOOGLE_CALENDAR_TIMEZONE` - Default timezone for calendar events
+   - `GOOGLE_CALENDAR_ID` - Default calendar ID (usually 'primary')
+   
+   See `env.example` for frontend variables and `env.backend.example` for backend variables.
 
 ## Running the Application
 
@@ -99,11 +117,14 @@ autosalon/
 ├── pages/              # Page components
 │   ├── LandingPage.tsx
 │   ├── Dashboard.tsx
-│   ├── Connections.tsx
+│   ├── CalendarView.tsx # Google Calendar integration
+│   ├── Connections.tsx  # Integration management
 │   ├── Professionals.tsx
 │   ├── Services.tsx
 │   ├── Reviews.tsx
 │   ├── Notifications.tsx
+│   ├── LoginPage.tsx
+│   ├── SignupPage.tsx
 │   ├── ProfessionalSetup.tsx
 │   ├── FeaturesPage.tsx
 │   ├── ManagementPage.tsx
@@ -111,6 +132,8 @@ autosalon/
 │   ├── PrivacyPage.tsx
 │   ├── TermsPage.tsx
 │   └── ContactPage.tsx
+├── services/           # API service layers
+│   └── calendarApi.ts  # Google Calendar API service (mock)
 ├── App.tsx             # Main application component with routing
 ├── index.tsx           # Application entry point
 ├── types.ts            # TypeScript type definitions
@@ -125,9 +148,47 @@ autosalon/
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
 
+## Dependencies
+
+### Core Dependencies
+- `react` & `react-dom` - React framework
+- `react-router-dom` - Client-side routing
+- `typescript` - Type safety
+
+### UI & Styling
+- `lucide-react` - Icon library
+- `tailwindcss` (via CDN) - Utility-first CSS framework
+- `recharts` - Data visualization and charts
+
+### Calendar Integration
+- `react-big-calendar` - Full-featured calendar component
+- `moment` - Date manipulation and formatting
+
+See `package.json` for complete dependency list.
+
 ## Authentication
 
 The application includes an authentication system that protects dashboard and management routes. Public routes (landing page, features, pricing) are accessible without authentication, while application routes require login.
+
+**Authentication Methods:**
+- Email/Password login and signup
+- Google OAuth login (mock implementation)
+
+## Google Calendar Integration
+
+The application includes a full-featured calendar view for managing appointments:
+
+- **View Appointments**: See all appointments in month, week, day, or agenda view
+- **Create Appointments**: Click on empty slots or use the "New Appointment" button
+- **Edit Appointments**: Click on any event to modify details
+- **Delete Appointments**: Remove appointments directly from the calendar
+- **Google Calendar Sync**: Connect your Google Calendar to sync appointments (mock implementation, ready for backend integration)
+
+Access the calendar via:
+- Sidebar menu → "Calendário"
+- Connections page → "Ver Calendário" (when connected)
+
+**Note**: Currently using mock data stored in localStorage. When backend is implemented, appointments will sync with Google Calendar via the Google Calendar API.
 
 ## Browser Support
 

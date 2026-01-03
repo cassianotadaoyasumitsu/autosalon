@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Link2, Users, Scissors, LogOut, Star, Bell } from 'lucide-react';
+import { LayoutDashboard, Link2, Users, Scissors, LogOut, Star, Bell, Calendar } from 'lucide-react';
 
 interface SidebarProps {
   onLogout: () => void;
@@ -11,6 +11,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, setIsOpen }) => {
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/calendar', label: 'Calendário', icon: Calendar },
     { path: '/connections', label: 'Conexões', icon: Link2 },
     { path: '/professionals', label: 'Equipe & Agenda', icon: Users },
     { path: '/services', label: 'Menu de Serviços', icon: Scissors },
