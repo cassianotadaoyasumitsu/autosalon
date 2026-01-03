@@ -8,7 +8,16 @@ export default defineConfig(({ mode }) => {
     // Base path para GitHub Pages (nome do repositório)
     // Se o repositório for username.github.io, use base: '/'
     // Caso contrário, use base: '/nome-do-repositorio/'
-    const base = process.env.GITHUB_PAGES ? '/autosalon/' : '/';
+    // Para produção no GitHub Pages, sempre usar /autosalon/
+    // Durante 'npm run build', o Vite sempre usa mode: 'production'
+    // Para desenvolvimento local, usar '/' para facilitar testes
+    const githubPagesEnv = process.env.GITHUB_PAGES || env.GITHUB_PAGES || '';
+    const isProduction = mode === 'production';
+    const githubPages = githubPagesEnv === 'true' || githubPagesEnv === '1';
+    
+    // Sempre usar /autosalon/ para builds de produção (GitHub Pages)
+    // Em desenvolvimento, usar '/' para facilitar testes locais
+    const base = (isProduction || githubPages) ? '/autosalon/' : '/';
     
     return {
       base,
