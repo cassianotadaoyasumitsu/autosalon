@@ -1,6 +1,7 @@
 import type React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CheckCircle, MessageCircle, Calendar, ArrowRight, Star, Users, Sparkles, TrendingUp, Bell, Smartphone, PieChart } from 'lucide-react';
+import PublicNavbar from '../components/PublicNavbar';
 
 const testimonials = [
   {
@@ -34,29 +35,8 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-stone-50 font-sans text-stone-800">
-      {/* Navigation - Linked to dedicated pages */}
-      <nav className="bg-white/90 backdrop-blur-md border-b border-stone-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex justify-between h-20 items-center">
-            <div className="flex-shrink-0 flex items-center">
-              <Link to="/" className="text-2xl font-serif italic font-bold text-zinc-900 tracking-wide">Perfect Salon</Link>
-            </div>
-            <div className="hidden md:flex space-x-10">
-              <Link to="/features" className="text-sm uppercase tracking-widest text-stone-500 hover:text-zinc-900 transition-colors">Funcionalidades</Link>
-              <Link to="/management" className="text-sm uppercase tracking-widest text-stone-500 hover:text-zinc-900 transition-colors">Gestão</Link>
-              <Link to="/pricing" className="text-sm uppercase tracking-widest text-stone-500 hover:text-zinc-900 transition-colors">Investimento</Link>
-            </div>
-            <div>
-              <Link 
-                to="/login"
-                className="bg-zinc-900 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition shadow-lg shadow-zinc-900/10 inline-block"
-              >
-                Area do Cliente
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      {/* Navigation */}
+      <PublicNavbar />
 
       {/* Hero Section */}
       <div className="relative overflow-hidden pt-20 pb-32 lg:pt-32">
