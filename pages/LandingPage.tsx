@@ -36,7 +36,7 @@ const testimonials = [
 const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
   return (
     <div className="min-h-screen bg-stone-50 font-sans text-stone-800">
-      {/* Navigation */}
+      {/* Navigation - Linked to dedicated pages */}
       <nav className="bg-white/90 backdrop-blur-md border-b border-stone-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
@@ -123,24 +123,51 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
         </div>
       </div>
 
-      {/* Features Preview - Short Version for Home */}
+      {/* Features Grid - Full Content */}
       <div className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-amber-600 text-xs font-bold uppercase tracking-[0.2em] mb-4">Destaques</h2>
+            <h2 className="text-amber-600 text-xs font-bold uppercase tracking-[0.2em] mb-4">Ecossistema Completo</h2>
             <p className="text-4xl font-serif text-zinc-900 mb-6">
-              Excelência em cada interação
+              Tudo o que você precisa para liderar
             </p>
-            <Link to="/features" className="text-sm font-bold uppercase tracking-widest text-zinc-900 border-b border-zinc-900 pb-1 hover:text-amber-600 hover:border-amber-600 transition-colors">
-               Ver todas as funcionalidades
-            </Link>
+            <p className="text-stone-500 font-light text-lg">
+              Centralize a gestão do seu salão em uma plataforma única, desenhada para estética e performance.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { title: 'Concierge WhatsApp', desc: 'IA que responde 24/7, agenda horários e tira dúvidas.', icon: MessageCircle },
-              { title: 'Multi-Agendas', desc: 'Sincronização individual com Google Calendar para cada especialista.', icon: Calendar },
-              { title: 'Dashboard Financeiro', desc: 'Faturamento estimado e métricas de conversão em tempo real.', icon: TrendingUp },
+              {
+                title: 'Concierge WhatsApp',
+                desc: 'IA que responde 24/7, agenda horários e tira dúvidas, integrada diretamente ao seu número comercial.',
+                icon: MessageCircle
+              },
+              {
+                title: 'Multi-Agendas',
+                desc: 'Sincronização individual com Google Calendar para cada especialista, mantendo a privacidade e organização.',
+                icon: Calendar
+              },
+              {
+                title: 'Gestão de Equipe',
+                desc: 'Perfis detalhados para cada profissional, com especialidades, métricas individuais e histórico.',
+                icon: Users
+              },
+              {
+                title: 'Dashboard Financeiro',
+                desc: 'Acompanhe faturamento estimado, ticket médio e volume de vendas com gráficos intuitivos.',
+                icon: TrendingUp
+              },
+              {
+                title: 'Reputação & Feedback',
+                desc: 'Coleta automatizada de avaliações pós-serviço para manter o padrão de qualidade nas alturas.',
+                icon: Star
+              },
+              {
+                title: 'Anti-No-Show',
+                desc: 'Lembretes automáticos e solicitações de confirmação reduzem drasticamente as faltas.',
+                icon: Bell
+              },
             ].map((feature, idx) => (
               <div key={idx} className="group p-8 bg-stone-50 rounded-2xl border border-stone-100 hover:border-amber-200 hover:shadow-lg transition-all duration-300">
                 <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-6 shadow-sm border border-stone-100 group-hover:bg-zinc-900 transition-colors">
@@ -150,6 +177,177 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
                 <p className="text-stone-600 font-light text-sm leading-relaxed">{feature.desc}</p>
               </div>
             ))}
+          </div>
+          
+          <div className="text-center mt-12">
+            <Link to="/features" className="text-sm font-bold uppercase tracking-widest text-zinc-900 border-b border-zinc-900 pb-1 hover:text-amber-600 hover:border-amber-600 transition-colors">
+               Ver todas as funcionalidades
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Management / Dashboard Highlight Section - Full Content */}
+      <div className="py-24 bg-zinc-950 text-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
+            
+            <div className="mb-12 lg:mb-0">
+               <h2 className="text-amber-500 text-xs font-bold uppercase tracking-[0.2em] mb-4">Inteligência de Negócios</h2>
+               <h3 className="text-4xl font-serif mb-6 text-white">
+                 Visão Macro e Micro <br/>do seu Faturamento
+               </h3>
+               <p className="text-stone-400 font-light text-lg mb-8 leading-relaxed">
+                 O Perfect Salon oferece um <strong>Dashboard Dinâmico</strong> que se adapta à sua necessidade de análise.
+               </p>
+
+               <div className="space-y-6">
+                 <div className="flex">
+                   <div className="flex-shrink-0">
+                     <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-white/10 text-amber-500">
+                       <PieChart className="h-5 w-5" />
+                     </div>
+                   </div>
+                   <div className="ml-4">
+                     <h4 className="text-lg font-bold font-serif text-white">Visão Geral (Owner)</h4>
+                     <p className="mt-2 text-sm text-stone-400 font-light">
+                       Monitore o faturamento total do salão, taxa de ocupação global e performance comparativa entre serviços.
+                     </p>
+                   </div>
+                 </div>
+
+                 <div className="flex">
+                   <div className="flex-shrink-0">
+                     <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-white/10 text-amber-500">
+                       <Users className="h-5 w-5" />
+                     </div>
+                   </div>
+                   <div className="ml-4">
+                     <h4 className="text-lg font-bold font-serif text-white">Filtro por Especialista</h4>
+                     <p className="mt-2 text-sm text-stone-400 font-light">
+                       Selecione um membro da equipe para visualizar métricas isoladas: agendamentos específicos, receita gerada e conversão individual.
+                     </p>
+                   </div>
+                 </div>
+
+                 <div className="flex">
+                   <div className="flex-shrink-0">
+                     <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-white/10 text-amber-500">
+                       <Smartphone className="h-5 w-5" />
+                     </div>
+                   </div>
+                   <div className="ml-4">
+                     <h4 className="text-lg font-bold font-serif text-white">Acesso Mobile</h4>
+                     <p className="mt-2 text-sm text-stone-400 font-light">
+                       Layout responsivo para que você ou seus profissionais consultem a agenda e metas de qualquer lugar.
+                     </p>
+                   </div>
+                 </div>
+               </div>
+               
+               <div className="mt-10">
+                 <Link to="/management" className="text-amber-500 text-sm font-bold uppercase tracking-widest hover:text-white transition-colors flex items-center">
+                    Explorar Gestão <ArrowRight className="ml-2 w-4 h-4" />
+                 </Link>
+               </div>
+            </div>
+
+            {/* Abstract Representation of Dashboard */}
+            <div className="relative rounded-2xl bg-zinc-900 border border-white/10 p-2 shadow-2xl transform lg:rotate-2 hover:rotate-0 transition-transform duration-500">
+               <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/10 to-transparent rounded-2xl pointer-events-none"></div>
+               <div className="bg-stone-50 rounded-xl overflow-hidden h-full min-h-[400px] p-6 relative">
+                  {/* Mock UI Elements */}
+                  <div className="flex justify-between items-center mb-6 border-b border-stone-200 pb-4">
+                     <div className="h-4 w-32 bg-zinc-200 rounded"></div>
+                     <div className="h-8 w-24 bg-zinc-900 rounded-lg"></div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                     <div className="bg-white p-4 rounded-lg shadow-sm border border-stone-100 h-24"></div>
+                     <div className="bg-white p-4 rounded-lg shadow-sm border border-stone-100 h-24"></div>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg shadow-sm border border-stone-100 h-40 mb-4"></div>
+                  
+                  {/* Floating badge */}
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-zinc-900/90 backdrop-blur text-white px-6 py-4 rounded-xl shadow-xl border border-white/20 text-center">
+                     <p className="text-xs uppercase tracking-widest text-amber-500 mb-1">Performance</p>
+                     <p className="font-serif text-2xl">R$ 14.250</p>
+                     <p className="text-[10px] text-stone-400">Esta semana</p>
+                  </div>
+               </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      {/* Testimonials */}
+      <div className="py-32 bg-stone-100 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-20">
+             <h2 className="text-4xl font-serif italic text-zinc-900">"Simplesmente indispensável."</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {testimonials.map((t) => (
+              <div key={t.id} className="bg-white p-10 shadow-xl shadow-stone-200/50 rounded-none border-l-4 border-amber-500">
+                <div className="flex items-center mb-6 text-amber-500">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-current" />
+                  ))}
+                </div>
+                <p className="text-stone-700 mb-8 font-light italic text-lg leading-relaxed">"{t.content}"</p>
+                <div className="flex items-center">
+                  <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full mr-4 grayscale" />
+                  <div>
+                    <h4 className="font-bold text-zinc-900 text-sm uppercase tracking-wider">{t.name}</h4>
+                    <span className="text-xs text-stone-500 tracking-wide">{t.role}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Pricing - Full Content */}
+      <div className="py-32 bg-white">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-serif text-zinc-900">Membership</h2>
+            <p className="mt-4 text-stone-500 font-light">Acesso exclusivo à plataforma completa.</p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto bg-zinc-950 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
+             <div className="p-12 md:w-1/2 flex flex-col justify-center border-b md:border-b-0 md:border-r border-white/10">
+                <h3 className="text-amber-500 text-sm font-bold uppercase tracking-[0.2em] mb-2">Perfect Salon Pro</h3>
+                <div className="flex items-baseline text-white mb-6">
+                  <span className="text-6xl font-serif">R$149</span>
+                  <span className="ml-2 text-stone-400 font-light">/mês</span>
+                </div>
+                <p className="text-stone-400 font-light leading-relaxed mb-8">
+                  Tudo o que você precisa para automatizar sua recepção com classe e eficiência.
+                </p>
+                <div className="flex space-x-4">
+                  <button 
+                     onClick={onLogin}
+                     className="flex-1 bg-white text-zinc-950 py-4 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-stone-200 transition-colors"
+                  >
+                    Tornar-se Membro
+                  </button>
+                  <Link to="/pricing" className="flex items-center justify-center px-6 py-4 border border-white/20 rounded-full text-xs font-bold uppercase tracking-widest text-white hover:bg-white/10 transition-colors">
+                     Detalhes
+                  </Link>
+                </div>
+             </div>
+             <div className="p-12 md:w-1/2 bg-zinc-900">
+                <ul className="space-y-6">
+                  {['Concierge WhatsApp Ilimitado', 'Até 10 Especialistas', 'Integração Google Calendar', 'Suite de Avaliações', 'Notificações Premium'].map((feat) => (
+                    <li key={feat} className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-amber-500 mt-0.5 flex-shrink-0" />
+                      <p className="ml-4 text-stone-300 font-light">{feat}</p>
+                    </li>
+                  ))}
+                </ul>
+             </div>
           </div>
         </div>
       </div>
