@@ -30,19 +30,19 @@ const ProtectedLayout: React.FC<ProtectedLayoutProps> = ({
   if (!isLoggedIn) return <Navigate to="/" replace />;
 
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden">
+    <div className="flex h-screen bg-stone-50 overflow-hidden font-sans text-stone-800">
       <Sidebar onLogout={onLogout} isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
       
       <div className="flex-1 flex flex-col overflow-hidden">
          {/* Mobile Header */}
-         <header className="bg-white border-b border-slate-200 h-16 flex items-center px-4 lg:hidden">
-           <button onClick={() => setSidebarOpen(true)} className="text-slate-500 hover:text-slate-700">
+         <header className="bg-white border-b border-stone-200 h-16 flex items-center px-6 lg:hidden justify-between">
+           <span className="font-serif italic text-xl text-zinc-900">Perfect Salon</span>
+           <button onClick={() => setSidebarOpen(true)} className="text-stone-500 hover:text-stone-800 transition-colors">
              <Menu className="w-6 h-6" />
            </button>
-           <span className="ml-4 font-bold text-slate-900">AutoSalon</span>
          </header>
 
-        <main className="flex-1 overflow-auto p-4 md:p-8">
+        <main className="flex-1 overflow-auto p-6 md:p-10">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>
