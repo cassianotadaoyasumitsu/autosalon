@@ -6,7 +6,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Plus, Trash2, X, Filter, ArrowLeft } from 'lucide-react';
 import { calendarApi } from '../services/calendarApi';
 import type { CalendarEvent } from '../services/calendarApi';
-import type { Professional } from '../types';
+import type { Professional, Service } from '../types';
 
 const localizer = momentLocalizer(moment);
 
@@ -50,6 +50,15 @@ const mockProfessionals: Professional[] = [
   }
 ];
 
+// Mock de serviços (em produção, viria de um contexto ou API)
+const mockServices: Service[] = [
+  { id: '1', name: 'Corte Masculino Premium', description: 'Corte moderno com técnicas profissionais e acabamento impecável.', price: 80, durationMinutes: 45, professionalIds: ['2'] },
+  { id: '2', name: 'Corte Feminino & Styling', description: 'Corte personalizado seguido de escova e finalização profissional.', price: 150, durationMinutes: 60, professionalIds: ['1'] },
+  { id: '3', name: 'Manicure Spa', description: 'Cuidado completo das unhas com hidratação e esmaltação.', price: 60, durationMinutes: 45, professionalIds: ['3'] },
+  { id: '4', name: 'Pedicure Spa', description: 'Tratamento completo dos pés com relaxamento e hidratação.', price: 70, durationMinutes: 45, professionalIds: ['3'] },
+  { id: '5', name: 'Tratamento Capilar', description: 'Tratamento profundo para recuperação e hidratação dos fios.', price: 250, durationMinutes: 90, professionalIds: ['1'] },
+];
+
 // Tradução para português
 const messages = {
   allDay: 'Dia inteiro',
@@ -77,9 +86,10 @@ const CalendarView: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProfessionalId, setSelectedProfessionalId] = useState<string>('all');
   const professionalFilterId = useId();
-  const titleInputId = useId();
   const clientNameInputId = useId();
   const clientPhoneInputId = useId();
+  const professionalSelectId = useId();
+  const serviceSelectId = useId();
   const startDateTimeId = useId();
   const endDateTimeId = useId();
   const descriptionTextareaId = useId();
@@ -152,6 +162,10 @@ const CalendarView: React.FC = () => {
       title: '',
       start: slotInfo.start,
       end: slotInfo.end,
+      clientName: '',
+      clientPhone: '',
+      professionalId: undefined,
+      serviceName: undefined,
     });
     setIsModalOpen(true);
   }, []);
@@ -163,19 +177,29 @@ const CalendarView: React.FC = () => {
   }, []);
 
   const handleSaveEvent = async () => {
-    if (!selectedEvent || !selectedEvent.title.trim()) {
-      alert('Por favor, preencha o título do evento');
+    if (!selectedEvent || !selectedEvent.clientName?.trim()) {
+      alert('Por favor, preencha o nome do cliente');
       return;
     }
 
     try {
+      // Gerar título automaticamente baseado no cliente e serviço
+      const title = selectedEvent.serviceName 
+        ? `${selectedEvent.serviceName} - ${selectedEvent.clientName}`
+        : selectedEvent.clientName || 'Agendamento';
+      
+      const eventToSave = {
+        ...selectedEvent,
+        title,
+      };
+
       if (selectedEvent.id && selectedEvent.id !== '') {
         // Atualizar evento existente
-        await calendarApi.updateEvent(selectedEvent.id, selectedEvent);
+        await calendarApi.updateEvent(selectedEvent.id, eventToSave);
       } else {
         // Criar novo evento
         await calendarApi.createEvent({
-          title: selectedEvent.title,
+          title,
           start: selectedEvent.start,
           end: selectedEvent.end,
           description: selectedEvent.description,
@@ -229,16 +253,20 @@ const CalendarView: React.FC = () => {
             </div>
             <button
               type="button"
-              onClick={() => {
-                const now = new Date();
-                setSelectedEvent({
-                  id: '',
-                  title: '',
-                  start: now,
-                  end: new Date(now.getTime() + 60 * 60 * 1000), // +1 hora
-                });
-                setIsModalOpen(true);
-              }}
+            onClick={() => {
+              const now = new Date();
+              setSelectedEvent({
+                id: '',
+                title: '',
+                start: now,
+                end: new Date(now.getTime() + 60 * 60 * 1000), // +1 hora
+                clientName: '',
+                clientPhone: '',
+                professionalId: undefined,
+                serviceName: undefined,
+              });
+              setIsModalOpen(true);
+            }}
               className="flex items-center gap-2 bg-zinc-900 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition"
             >
               <Plus className="w-4 h-4" />
@@ -405,22 +433,6 @@ const CalendarView: React.FC = () => {
 
             <div className="space-y-4">
               <div>
-                <label htmlFor={titleInputId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
-                  Título / Cliente
-                </label>
-                <input
-                  id={titleInputId}
-                  type="text"
-                  value={selectedEvent.title}
-                  onChange={(e) =>
-                    setSelectedEvent({ ...selectedEvent, title: e.target.value })
-                  }
-                  className="w-full rounded-lg border-stone-200 p-3 bg-stone-50 focus:border-zinc-900 focus:ring-zinc-900"
-                  placeholder="Ex: Corte - João Silva"
-                />
-              </div>
-
-              <div>
                 <label htmlFor={clientNameInputId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
                   Nome do Cliente
                 </label>
@@ -450,6 +462,56 @@ const CalendarView: React.FC = () => {
                   className="w-full rounded-lg border-stone-200 p-3 bg-stone-50 focus:border-zinc-900 focus:ring-zinc-900"
                   placeholder="+55 11 99999-9999"
                 />
+              </div>
+
+              <div>
+                <label htmlFor={professionalSelectId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
+                  Profissional
+                </label>
+                <select
+                  id={professionalSelectId}
+                  value={selectedEvent.professionalId || ''}
+                  onChange={(e) =>
+                    setSelectedEvent({ ...selectedEvent, professionalId: e.target.value || undefined })
+                  }
+                  className="w-full rounded-lg border-stone-200 p-3 bg-stone-50 text-stone-800 focus:border-zinc-900 focus:ring-zinc-900 focus:outline-none"
+                >
+                  <option value="">Selecione um profissional</option>
+                  {mockProfessionals.map((prof) => (
+                    <option key={prof.id} value={prof.id}>
+                      {prof.name} - {prof.specialty}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor={serviceSelectId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
+                  Serviço
+                </label>
+                <select
+                  id={serviceSelectId}
+                  value={selectedEvent.serviceName || ''}
+                  onChange={(e) => {
+                    const selectedService = mockServices.find(s => s.name === e.target.value);
+                    setSelectedEvent({ 
+                      ...selectedEvent, 
+                      serviceName: e.target.value || undefined,
+                      // Atualizar duração automaticamente se um serviço for selecionado
+                      end: selectedService 
+                        ? new Date(selectedEvent.start.getTime() + selectedService.durationMinutes * 60000)
+                        : selectedEvent.end
+                    });
+                  }}
+                  className="w-full rounded-lg border-stone-200 p-3 bg-stone-50 text-stone-800 focus:border-zinc-900 focus:ring-zinc-900 focus:outline-none"
+                >
+                  <option value="">Selecione um serviço</option>
+                  {mockServices.map((service) => (
+                    <option key={service.id} value={service.name}>
+                      {service.name} - {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(service.price)} ({service.durationMinutes} min)
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
