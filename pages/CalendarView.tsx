@@ -3,7 +3,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import type { View, SlotInfo } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Plus, Trash2, X, Filter } from 'lucide-react';
+import { Plus, Trash2, X, Filter, ArrowLeft } from 'lucide-react';
 import { calendarApi } from '../services/calendarApi';
 import type { CalendarEvent } from '../services/calendarApi';
 import type { Professional } from '../types';
@@ -123,6 +123,27 @@ const CalendarView: React.FC = () => {
       setFilteredEvents(events.filter(event => event.professionalId === selectedProfessionalId));
     }
   }, [events, selectedProfessionalId]);
+
+  // Calcular agendamentos por profissional baseado nos eventos filtrados
+  const getAppointmentsByProfessional = () => {
+    const appointmentsCount: Record<string, number> = {};
+    
+    mockProfessionals.forEach(prof => {
+      appointmentsCount[prof.id] = filteredEvents.filter(
+        event => event.professionalId === prof.id
+      ).length;
+    });
+
+    return appointmentsCount;
+  };
+
+  // Obter profissionais para exibir nos cards
+  const getProfessionalsToDisplay = () => {
+    if (selectedProfessionalId === 'all') {
+      return mockProfessionals;
+    }
+    return mockProfessionals.filter(prof => prof.id === selectedProfessionalId);
+  };
 
   const handleSelectSlot = useCallback((slotInfo: SlotInfo) => {
     // Criar novo evento ao clicar em um slot vazio
@@ -296,6 +317,69 @@ const CalendarView: React.FC = () => {
               }}
             />
           )}
+        </div>
+
+        {/* Cards de Profissionais */}
+        <div className="p-6 border-t border-stone-200 bg-stone-50">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-serif text-zinc-900">
+              {selectedProfessionalId === 'all' 
+                ? 'Resumo por Profissional' 
+                : `Agendamentos de ${getProfessionalsToDisplay()[0]?.name || ''}`
+              }
+            </h3>
+            {selectedProfessionalId !== 'all' && (
+              <button
+                type="button"
+                onClick={() => setSelectedProfessionalId('all')}
+                className="flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-widest text-stone-600 hover:text-zinc-900 border border-stone-300 rounded-lg hover:bg-white transition"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Ver Todos
+              </button>
+            )}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {getProfessionalsToDisplay().map((professional) => {
+              const appointmentsCount = getAppointmentsByProfessional()[professional.id] || 0;
+              const colors = {
+                '1': { bg: 'bg-amber-50', border: 'border-amber-400', text: 'text-amber-700' }, // Ana
+                '2': { bg: 'bg-blue-50', border: 'border-blue-400', text: 'text-blue-700' }, // Carlos
+                '3': { bg: 'bg-pink-50', border: 'border-pink-400', text: 'text-pink-700' }, // Mariana
+                default: { bg: 'bg-stone-50', border: 'border-stone-400', text: 'text-stone-700' }
+              };
+              const color = colors[professional.id as keyof typeof colors] || colors.default;
+
+              return (
+                <button
+                  key={professional.id}
+                  type="button"
+                  className={`${color.bg} ${color.border} border-2 rounded-xl p-6 hover:shadow-lg transition-all cursor-pointer text-left w-full`}
+                  onClick={() => setSelectedProfessionalId(professional.id)}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={professional.photoUrl}
+                        alt={professional.name}
+                        className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md"
+                      />
+                      <div>
+                        <h4 className="font-serif text-lg text-zinc-900">{professional.name}</h4>
+                        <p className="text-xs text-stone-500 uppercase tracking-wide">{professional.specialty}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={`${color.text} text-center`}>
+                    <div className="text-4xl font-bold mb-1">{appointmentsCount}</div>
+                    <div className="text-xs font-bold uppercase tracking-widest">
+                      {appointmentsCount === 1 ? 'Agendamento' : 'Agendamentos'}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
