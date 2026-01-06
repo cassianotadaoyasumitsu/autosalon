@@ -1,11 +1,54 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Calendar, momentLocalizer, View, SlotInfo } from 'react-big-calendar';
+import { useState, useEffect, useCallback, useId } from 'react';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import type { View, SlotInfo } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Plus, Edit, Trash2, X, User, Phone, Clock } from 'lucide-react';
-import { calendarApi, CalendarEvent } from '../services/calendarApi';
+import { Plus, Trash2, X, Filter } from 'lucide-react';
+import { calendarApi } from '../services/calendarApi';
+import type { CalendarEvent } from '../services/calendarApi';
+import type { Professional } from '../types';
 
 const localizer = momentLocalizer(moment);
+
+// Mock de profissionais (em produção, viria de um contexto ou API)
+const mockProfessionals: Professional[] = [
+  {
+    id: '1',
+    name: 'Ana Souza',
+    specialty: 'Colorista Senior',
+    photoUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80',
+    email: 'ana@salao.com',
+    calendarConnected: true,
+    googleCalendarId: 'ana.work@gmail.com',
+    status: 'ACTIVE',
+    rating: 4.9,
+    reviewCount: 124
+  },
+  {
+    id: '2',
+    name: 'Carlos Oliveira',
+    specialty: 'Master Barber',
+    photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80',
+    email: 'carlos@salao.com',
+    calendarConnected: false,
+    status: 'PENDING_SETUP',
+    inviteToken: 'abc123xyz',
+    rating: 4.8,
+    reviewCount: 42
+  },
+  {
+    id: '3',
+    name: 'Mariana Lima',
+    specialty: 'Nail Artist',
+    photoUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80',
+    email: 'mari@salao.com',
+    calendarConnected: true,
+    googleCalendarId: 'mari.nails@gmail.com',
+    status: 'ACTIVE',
+    rating: 5.0,
+    reviewCount: 89
+  }
+];
 
 // Tradução para português
 const messages = {
@@ -26,17 +69,22 @@ const messages = {
 
 const CalendarView: React.FC = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [filteredEvents, setFilteredEvents] = useState<CalendarEvent[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentView, setCurrentView] = useState<View>('month');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedProfessionalId, setSelectedProfessionalId] = useState<string>('all');
+  const professionalFilterId = useId();
+  const titleInputId = useId();
+  const clientNameInputId = useId();
+  const clientPhoneInputId = useId();
+  const startDateTimeId = useId();
+  const endDateTimeId = useId();
+  const descriptionTextareaId = useId();
 
-  useEffect(() => {
-    loadEvents();
-  }, [currentDate, currentView]);
-
-  const loadEvents = async () => {
+  const loadEvents = useCallback(async () => {
     setIsLoading(true);
     try {
       // Calcular range de datas baseado na view atual
@@ -61,7 +109,20 @@ const CalendarView: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentDate, currentView]);
+
+  useEffect(() => {
+    loadEvents();
+  }, [loadEvents]);
+
+  useEffect(() => {
+    // Filtrar eventos baseado no profissional selecionado
+    if (selectedProfessionalId === 'all') {
+      setFilteredEvents(events);
+    } else {
+      setFilteredEvents(events.filter(event => event.professionalId === selectedProfessionalId));
+    }
+  }, [events, selectedProfessionalId]);
 
   const handleSelectSlot = useCallback((slotInfo: SlotInfo) => {
     // Criar novo evento ao clicar em um slot vazio
@@ -139,28 +200,56 @@ const CalendarView: React.FC = () => {
     <div className="h-full bg-stone-50 flex flex-col">
       <div className="bg-white rounded-xl shadow-sm border border-stone-200 flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="p-6 border-b border-stone-200 flex justify-between items-center flex-shrink-0">
-          <div>
-            <h2 className="text-2xl font-serif text-zinc-900">Calendário de Agendamentos</h2>
-            <p className="text-sm text-stone-500 mt-1">Gerencie todos os seus agendamentos em um só lugar</p>
+        <div className="p-6 border-b border-stone-200 flex-shrink-0">
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h2 className="text-2xl font-serif text-zinc-900">Calendário de Agendamentos</h2>
+              <p className="text-sm text-stone-500 mt-1">Gerencie todos os seus agendamentos em um só lugar</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                const now = new Date();
+                setSelectedEvent({
+                  id: '',
+                  title: '',
+                  start: now,
+                  end: new Date(now.getTime() + 60 * 60 * 1000), // +1 hora
+                });
+                setIsModalOpen(true);
+              }}
+              className="flex items-center gap-2 bg-zinc-900 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition"
+            >
+              <Plus className="w-4 h-4" />
+              Novo
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              const now = new Date();
-              setSelectedEvent({
-                id: '',
-                title: '',
-                start: now,
-                end: new Date(now.getTime() + 60 * 60 * 1000), // +1 hora
-              });
-              setIsModalOpen(true);
-            }}
-            className="flex items-center gap-2 bg-zinc-900 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition"
-          >
-            <Plus className="w-4 h-4" />
-            Novo
-          </button>
+          
+          {/* Filtro de Profissional */}
+          <div className="flex items-center gap-3">
+            <Filter className="w-4 h-4 text-stone-500" />
+            <label htmlFor={professionalFilterId} className="text-xs font-bold uppercase tracking-widest text-stone-500">
+              Filtrar por:
+            </label>
+            <select
+              id={professionalFilterId}
+              value={selectedProfessionalId}
+              onChange={(e) => setSelectedProfessionalId(e.target.value)}
+              className="px-4 py-2 rounded-lg border-stone-200 bg-white text-stone-800 text-sm font-medium focus:border-zinc-900 focus:ring-zinc-900 focus:outline-none cursor-pointer"
+            >
+              <option value="all">Todos os Profissionais</option>
+              {mockProfessionals.map((prof) => (
+                <option key={prof.id} value={prof.id}>
+                  {prof.name} - {prof.specialty}
+                </option>
+              ))}
+            </select>
+            {selectedProfessionalId !== 'all' && (
+              <span className="text-xs text-stone-500">
+                ({filteredEvents.length} {filteredEvents.length === 1 ? 'agendamento' : 'agendamentos'})
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Calendar */}
@@ -172,7 +261,7 @@ const CalendarView: React.FC = () => {
           ) : (
             <Calendar
               localizer={localizer}
-              events={events}
+              events={filteredEvents}
               startAccessor="start"
               endAccessor="end"
               style={{ height: '100%', minHeight: '500px' }}
@@ -185,13 +274,26 @@ const CalendarView: React.FC = () => {
               selectable
               culture="pt-BR"
               messages={messages}
-              eventPropGetter={(event) => ({
-                style: {
-                  backgroundColor: '#18181b', // zinc-900
-                  borderColor: '#fbbf24', // amber-400
-                  color: 'white',
-                },
-              })}
+              eventPropGetter={(event) => {
+                // Cores diferentes por profissional
+                const professional = mockProfessionals.find(p => p.id === event.professionalId);
+                const colors = {
+                  '1': { bg: '#18181b', border: '#f59e0b' }, // Ana - amber
+                  '2': { bg: '#1e293b', border: '#3b82f6' }, // Carlos - blue
+                  '3': { bg: '#1e293b', border: '#ec4899' }, // Mariana - pink
+                  default: { bg: '#18181b', border: '#fbbf24' } // default - amber
+                };
+                const color = professional ? colors[professional.id as keyof typeof colors] || colors.default : colors.default;
+                
+                return {
+                  style: {
+                    backgroundColor: color.bg,
+                    borderColor: color.border,
+                    color: 'white',
+                    borderLeftWidth: '4px',
+                  },
+                };
+              }}
             />
           )}
         </div>
@@ -219,10 +321,11 @@ const CalendarView: React.FC = () => {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
+                <label htmlFor={titleInputId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
                   Título / Cliente
                 </label>
                 <input
+                  id={titleInputId}
                   type="text"
                   value={selectedEvent.title}
                   onChange={(e) =>
@@ -234,10 +337,11 @@ const CalendarView: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
+                <label htmlFor={clientNameInputId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
                   Nome do Cliente
                 </label>
                 <input
+                  id={clientNameInputId}
                   type="text"
                   value={selectedEvent.clientName || ''}
                   onChange={(e) =>
@@ -249,10 +353,11 @@ const CalendarView: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
+                <label htmlFor={clientPhoneInputId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
                   Telefone
                 </label>
                 <input
+                  id={clientPhoneInputId}
                   type="tel"
                   value={selectedEvent.clientPhone || ''}
                   onChange={(e) =>
@@ -264,10 +369,11 @@ const CalendarView: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
+                <label htmlFor={startDateTimeId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
                   Data/Hora Início
                 </label>
                 <input
+                  id={startDateTimeId}
                   type="datetime-local"
                   value={moment(selectedEvent.start).format('YYYY-MM-DDTHH:mm')}
                   onChange={(e) =>
@@ -281,10 +387,11 @@ const CalendarView: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
+                <label htmlFor={endDateTimeId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
                   Data/Hora Fim
                 </label>
                 <input
+                  id={endDateTimeId}
                   type="datetime-local"
                   value={moment(selectedEvent.end).format('YYYY-MM-DDTHH:mm')}
                   onChange={(e) =>
@@ -298,10 +405,11 @@ const CalendarView: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
+                <label htmlFor={descriptionTextareaId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
                   Descrição / Observações
                 </label>
                 <textarea
+                  id={descriptionTextareaId}
                   value={selectedEvent.description || ''}
                   onChange={(e) =>
                     setSelectedEvent({ ...selectedEvent, description: e.target.value })
