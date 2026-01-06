@@ -2,17 +2,18 @@
 
 ## 🎯 Recomendação Principal
 
-**Stack: Node.js + TypeScript + Prisma + PostgreSQL**
+**Stack: Node.js/Bun + TypeScript + Prisma + PostgreSQL**
 
 ### Por que esta stack?
 
 - ✅ **Mesma linguagem do frontend** (TypeScript) - facilita manutenção e compartilhamento de tipos
 - ✅ **Ecossistema maduro** - ampla comunidade e documentação
-- ✅ **Performance** - Node.js é excelente para I/O assíncrono (APIs, integrações)
+- ✅ **Performance** - Node.js/Bun são excelentes para I/O assíncrono (APIs, integrações)
 - ✅ **Escalabilidade** - fácil escalar horizontalmente
 - ✅ **Type Safety** - TypeScript garante menos erros em runtime
 - ✅ **Prisma** - ORM moderno com excelente DX (Developer Experience)
 - ✅ **PostgreSQL** - Banco relacional robusto e confiável
+- ⚡ **Bun (opcional)** - Runtime ultra-rápido com suporte nativo a TypeScript
 
 ---
 
@@ -20,12 +21,29 @@
 
 ### Core
 ```
-Node.js 20+ (LTS)
+Node.js 20+ (LTS) OU Bun (latest)
 TypeScript 5+
 Express.js ou Fastify (API REST)
 Prisma (ORM - altamente recomendado)
 PostgreSQL 15+ (banco de dados)
 ```
+
+### Escolhendo entre Node.js e Bun
+
+**Node.js** (Recomendado para produção):
+- ✅ Ecossistema mais maduro e estável
+- ✅ Maior compatibilidade com bibliotecas
+- ✅ Melhor suporte em plataformas de deploy
+- ✅ Comunidade maior e mais documentação
+
+**Bun** (Recomendado para desenvolvimento):
+- ⚡ Performance superior (até 3x mais rápido)
+- ⚡ Instalação de pacotes muito mais rápida
+- ⚡ Suporte nativo a TypeScript (sem transpilação)
+- ⚡ Bundler e test runner integrados
+- ⚡ Compatível com a maioria dos pacotes npm
+
+**Recomendação**: Use **Bun para desenvolvimento** (mais rápido) e **Node.js para produção** (mais estável), ou use Bun em ambos se preferir máxima performance.
 
 ### Bibliotecas Essenciais
 
@@ -55,6 +73,13 @@ PostgreSQL 15+ (banco de dados)
     "ts-node": "^10.9.2",
     "tsx": "^4.7.0",
     "nodemon": "^3.0.2"
+  },
+  "scripts": {
+    "dev": "nodemon --exec tsx src/index.ts",
+    "dev:bun": "bun --watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "start:bun": "bun dist/index.js"
   }
 }
 ```
@@ -684,10 +709,397 @@ export class GoogleCalendarService {
 
 ---
 
+## 🚀 Implementação com Bun
+
+Bun oferece uma experiência de desenvolvimento mais rápida e simplificada. Esta seção mostra como implementar o backend usando Bun ao invés de Node.js.
+
+### Por que usar Bun?
+
+- ⚡ **Performance**: Até 3x mais rápido que Node.js em muitas operações
+- 🚀 **Instalação rápida**: Instala pacotes até 30x mais rápido que npm
+- 📦 **TypeScript nativo**: Executa TypeScript diretamente sem transpilação
+- 🔥 **Hot reload**: Watch mode nativo sem necessidade de nodemon
+- 🛠️ **All-in-one**: Runtime, bundler, test runner e package manager em um só
+
+### 1. Setup Inicial com Bun
+
+```bash
+# Instalar Bun (se ainda não tiver)
+curl -fsSL https://bun.sh/install | bash
+
+# Criar estrutura do projeto
+mkdir backend && cd backend
+bun init
+
+# Instalar dependências (muito mais rápido!)
+bun install express @prisma/client prisma zod googleapis @google/generative-ai bcryptjs jsonwebtoken cors helmet express-rate-limit express-validator
+
+# Instalar dependências de desenvolvimento
+bun add -d @types/express @types/bcryptjs @types/jsonwebtoken @types/node typescript
+```
+
+### 2. package.json para Bun
+
+```json
+{
+  "name": "perfect-salon-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "start": "bun dist/index.js",
+    "prisma:generate": "bunx prisma generate",
+    "prisma:migrate": "bunx prisma migrate dev",
+    "prisma:studio": "bunx prisma studio"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "@prisma/client": "^5.7.0",
+    "prisma": "^5.7.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^3.22.4",
+    "googleapis": "^128.0.0",
+    "@google/generative-ai": "^0.2.1",
+    "express-rate-limit": "^7.1.5",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "express-validator": "^7.0.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3"
+  }
+}
+```
+
+### 3. Configuração TypeScript (tsconfig.json)
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022"],
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+```
+
+### 4. Servidor Express com Bun
+
+```typescript
+// src/index.ts
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import { config } from './config/env';
+import { authRoutes } from './routes/auth.routes';
+import { professionalsRoutes } from './routes/professionals.routes';
+import { errorHandler } from './middleware/error.middleware';
+
+const app = express();
+
+// Security middleware
+app.use(helmet());
+app.use(cors({
+  origin: config.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true,
+}));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // máximo 100 requests por IP
+});
+app.use('/api/', limiter);
+
+// Body parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/professionals', professionalsRoutes);
+
+// Error handler
+app.use(errorHandler);
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', runtime: 'bun' });
+});
+
+const PORT = config.PORT || 3001;
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`⚡ Powered by Bun ${Bun.version}`);
+});
+```
+
+### 5. Configuração de Ambiente com Bun
+
+```typescript
+// src/config/env.ts
+import { z } from 'zod';
+
+const envSchema = z.object({
+  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  PORT: z.string().default('3001'),
+  DATABASE_URL: z.string(),
+  JWT_SECRET: z.string().min(32),
+  JWT_REFRESH_SECRET: z.string().min(32),
+  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CLIENT_SECRET: z.string(),
+  GEMINI_API_KEY: z.string(),
+  FRONTEND_URL: z.string().default('http://localhost:3000'),
+});
+
+// Bun lê .env automaticamente, mas podemos validar
+export const config = envSchema.parse({
+  NODE_ENV: Bun.env.NODE_ENV || 'development',
+  PORT: Bun.env.PORT || '3001',
+  DATABASE_URL: Bun.env.DATABASE_URL,
+  JWT_SECRET: Bun.env.JWT_SECRET,
+  JWT_REFRESH_SECRET: Bun.env.JWT_REFRESH_SECRET,
+  GOOGLE_CLIENT_ID: Bun.env.GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET: Bun.env.GOOGLE_CLIENT_SECRET,
+  GEMINI_API_KEY: Bun.env.GEMINI_API_KEY,
+  FRONTEND_URL: Bun.env.FRONTEND_URL || 'http://localhost:3000',
+});
+```
+
+### 6. Prisma Client com Bun
+
+```typescript
+// src/config/database.ts
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient({
+  log: Bun.env.NODE_ENV === 'development' 
+    ? ['query', 'error', 'warn'] 
+    : ['error'],
+});
+
+// Graceful shutdown
+process.on('beforeExit', async () => {
+  await prisma.$disconnect();
+});
+
+export default prisma;
+```
+
+### 7. Controller de Autenticação (Bun)
+
+```typescript
+// src/controllers/auth.controller.ts
+import { Request, Response } from 'express';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import prisma from '../config/database';
+import { config } from '../config/env';
+
+export class AuthController {
+  async signup(req: Request, res: Response) {
+    const { email, password, name } = req.body;
+
+    // Verificar se usuário já existe
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email já cadastrado' });
+    }
+
+    // Hash da senha (Bun tem suporte nativo para crypto, mas bcryptjs funciona igual)
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Criar usuário e salão
+    const user = await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        name,
+        role: 'OWNER',
+        salon: {
+          create: {
+            name: `${name}'s Salon`,
+          },
+        },
+      },
+      include: {
+        salon: true,
+      },
+    });
+
+    // Gerar tokens
+    const token = jwt.sign({ userId: user.id }, config.JWT_SECRET, {
+      expiresIn: '15m',
+    });
+
+    const refreshToken = jwt.sign({ userId: user.id }, config.JWT_REFRESH_SECRET, {
+      expiresIn: '7d',
+    });
+
+    res.status(201).json({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
+      token,
+      refreshToken,
+    });
+  }
+
+  // ... outros métodos (login, me, etc) são idênticos ao Node.js
+}
+```
+
+### 8. Comandos de Desenvolvimento
+
+```bash
+# Desenvolvimento com hot reload automático
+bun dev
+
+# Ou com watch explícito
+bun --watch src/index.ts
+
+# Gerar Prisma Client
+bunx prisma generate
+
+# Criar migration
+bunx prisma migrate dev --name init
+
+# Abrir Prisma Studio
+bunx prisma studio
+
+# Build para produção
+bun build src/index.ts --outdir dist --target bun --minify
+
+# Executar produção
+bun dist/index.js
+```
+
+### 9. Vantagens Específicas do Bun
+
+#### Performance
+- **Instalação**: `bun install` é até 30x mais rápido que `npm install`
+- **Startup**: Aplicações iniciam mais rápido
+- **I/O**: Operações de arquivo e rede são mais eficientes
+
+#### Desenvolvimento
+- **TypeScript**: Executa diretamente sem transpilação
+- **Hot Reload**: Watch mode nativo, sem necessidade de nodemon
+- **Testes**: Test runner integrado (não precisa de Jest/Vitest)
+
+#### Compatibilidade
+- ✅ Compatível com a maioria dos pacotes npm
+- ✅ Suporta Node.js APIs (fs, path, crypto, etc)
+- ✅ Funciona com Express, Prisma, e outras bibliotecas populares
+
+### 10. Diferenças Importantes
+
+#### Variáveis de Ambiente
+```typescript
+// Node.js
+process.env.DATABASE_URL
+
+// Bun
+Bun.env.DATABASE_URL
+// ou (compatibilidade)
+process.env.DATABASE_URL // também funciona
+```
+
+#### File System
+```typescript
+// Bun tem APIs nativas mais rápidas
+import { readFile, writeFile } from 'fs/promises';
+
+// Mas também suporta Node.js fs
+const file = Bun.file('data.json');
+const content = await file.text();
+```
+
+#### HTTP Server Nativo (Alternativa ao Express)
+```typescript
+// Bun também tem servidor HTTP nativo (mais rápido)
+const server = Bun.serve({
+  port: 3001,
+  fetch(req) {
+    return new Response('Hello from Bun!');
+  },
+});
+```
+
+### 11. Deploy com Bun
+
+#### Railway / Render
+```bash
+# Build command
+bun build src/index.ts --outdir dist --target bun
+
+# Start command
+bun dist/index.js
+```
+
+#### Docker
+```dockerfile
+FROM oven/bun:latest
+
+WORKDIR /app
+
+COPY package.json bun.lockb ./
+RUN bun install --frozen-lockfile
+
+COPY . .
+RUN bun build src/index.ts --outdir dist --target bun
+
+EXPOSE 3001
+
+CMD ["bun", "dist/index.js"]
+```
+
+### 12. Migração de Node.js para Bun
+
+Se você já tem um projeto Node.js, migrar para Bun é simples:
+
+1. **Instalar Bun**: `curl -fsSL https://bun.sh/install | bash`
+2. **Trocar comandos**: `npm install` → `bun install`
+3. **Atualizar scripts**: Remover `nodemon`, `ts-node`, `tsx` (não são necessários)
+4. **Testar**: Executar `bun dev` e verificar se tudo funciona
+5. **Opcional**: Usar `Bun.env` ao invés de `process.env` para melhor performance
+
+**Nota**: A maioria do código funciona sem alterações! Bun é altamente compatível com Node.js.
+
+---
+
 ## 📋 Checklist de Implementação
 
 ### Semana 1: Setup Básico
-- [ ] Criar projeto Node.js + TypeScript
+- [ ] Escolher runtime: Node.js ou Bun
+- [ ] Criar projeto Node.js/Bun + TypeScript
 - [ ] Configurar Prisma + PostgreSQL
 - [ ] Criar schema do banco de dados
 - [ ] Configurar variáveis de ambiente
@@ -695,6 +1107,33 @@ export class GoogleCalendarService {
 - [ ] Criar endpoints de auth (signup, login, me)
 - [ ] Implementar middleware de autenticação
 - [ ] Configurar CORS e segurança básica
+
+### Setup com Bun (Opcional)
+
+Se escolher usar Bun, você pode simplificar o setup:
+
+```bash
+# Instalar Bun
+curl -fsSL https://bun.sh/install | bash
+
+# Criar projeto
+bun init
+
+# Instalar dependências (muito mais rápido)
+bun install
+
+# Executar em desenvolvimento (sem necessidade de nodemon/tsx)
+bun --watch src/index.ts
+
+# Build (Bun tem bundler integrado)
+bun build src/index.ts --outdir dist
+```
+
+**Vantagens do Bun para desenvolvimento:**
+- Não precisa de `ts-node`, `tsx`, ou `nodemon`
+- Execução direta de arquivos TypeScript
+- Hot reload nativo
+- Instalação de pacotes muito mais rápida
 
 ### Semana 2: CRUD Básico
 - [ ] Endpoints de Professionals (CRUD completo)
@@ -799,6 +1238,7 @@ Ver `env.backend.example` para lista completa.
 
 - [Prisma Docs](https://www.prisma.io/docs)
 - [Express.js Docs](https://expressjs.com/)
+- [Bun Docs](https://bun.sh/docs) - Runtime JavaScript ultra-rápido
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [PostgreSQL Docs](https://www.postgresql.org/docs/)
 - [Google Calendar API](https://developers.google.com/calendar)

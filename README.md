@@ -36,8 +36,8 @@ Perfect Salon is a modern, full-featured management system that helps salon owne
 
 Before you begin, ensure you have the following installed:
 
-- **Node.js** (v16 or higher recommended)
-- **npm** or **yarn** package manager
+- **Node.js** (v16 or higher recommended) **OR** **Bun** (latest version)
+- **npm**, **yarn**, or **bun** package manager
 
 ## Installation
 
@@ -48,8 +48,20 @@ cd autosalon
 ```
 
 2. Install dependencies:
+
+**Using npm:**
 ```bash
 npm install
+```
+
+**Using Bun (recommended for faster installation):**
+```bash
+bun install
+```
+
+**Using yarn:**
+```bash
+yarn install
 ```
 
 3. (Optional) Set up environment variables:
@@ -79,8 +91,21 @@ cp env.example .env.local
 
 Start the development server:
 
+**Using npm:**
 ```bash
 npm run dev
+```
+
+**Using Bun:**
+```bash
+bun run dev
+# or simply
+bun dev
+```
+
+**Using yarn:**
+```bash
+yarn dev
 ```
 
 The application will be available at `http://localhost:3000`
@@ -93,8 +118,21 @@ The dev server supports:
 
 Create an optimized production build:
 
+**Using npm:**
 ```bash
 npm run build
+```
+
+**Using Bun:**
+```bash
+bun run build
+# or simply
+bun build
+```
+
+**Using yarn:**
+```bash
+yarn build
 ```
 
 The built files will be in the `dist` directory.
@@ -103,8 +141,21 @@ The built files will be in the `dist` directory.
 
 Preview the production build locally:
 
+**Using npm:**
 ```bash
 npm run preview
+```
+
+**Using Bun:**
+```bash
+bun run preview
+# or simply
+bun preview
+```
+
+**Using yarn:**
+```bash
+yarn preview
 ```
 
 ## Project Structure
@@ -150,9 +201,31 @@ autosalon/
 
 ## Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
+All scripts work with npm, yarn, or Bun:
+
+- `dev` - Start development server
+- `build` - Build for production
+- `preview` - Preview production build
+
+**Examples:**
+```bash
+# Using npm
+npm run dev
+
+# Using Bun (recommended - faster)
+bun dev
+
+# Using yarn
+yarn dev
+```
+
+### Why Bun?
+
+Bun is a fast JavaScript runtime and package manager that can significantly speed up your development workflow:
+- ⚡ **Faster installs** - Up to 30x faster than npm
+- 🚀 **Native TypeScript support** - No need for ts-node or tsx
+- 📦 **Compatible** - Works with existing npm packages and package.json
+- 🔧 **All-in-one** - Runtime, bundler, test runner, and package manager
 
 ## Dependencies
 
