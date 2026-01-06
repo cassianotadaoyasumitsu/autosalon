@@ -17,6 +17,7 @@ import Professionals from './pages/Professionals';
 import Services from './pages/Services';
 import Reviews from './pages/Reviews';
 import Notifications from './pages/Notifications';
+import NotificationHistory from './pages/NotificationHistory';
 import ProfessionalSetup from './pages/ProfessionalSetup';
 import CalendarView from './pages/CalendarView';
 import { Menu } from 'lucide-react';
@@ -85,6 +86,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/services" element={<ProtectedLayout><Services /></ProtectedLayout>} />
       <Route path="/reviews" element={<ProtectedLayout><Reviews /></ProtectedLayout>} />
       <Route path="/notifications" element={<ProtectedLayout><Notifications /></ProtectedLayout>} />
+      <Route path="/notifications/history" element={<ProtectedLayout><NotificationHistory /></ProtectedLayout>} />
       <Route path="/calendar" element={<ProtectedLayout><CalendarView /></ProtectedLayout>} />
 
       {/* Catch all redirect */}

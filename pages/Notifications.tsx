@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Bell, Settings, CheckCircle, AlertTriangle, Clock, Smartphone } from 'lucide-react';
-import { NotificationLog } from '../types';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Settings, CheckCircle, AlertTriangle, Clock, Smartphone } from 'lucide-react';
+import type { NotificationLog } from '../types';
 
 const mockLogs: NotificationLog[] = [
   { id: '1', type: 'CLIENT_REMINDER', title: 'Lembrete Enviado', message: 'Olá Fernanda, seu agendamento é amanhã às 14h.', recipient: 'Fernanda Lima (11) 99999-9999', sentAt: 'Hoje, 10:30', status: 'SENT' },
@@ -37,6 +38,7 @@ const Notifications: React.FC = () => {
                 <p className="text-xs text-stone-500 font-light mt-1">Notificação 24h via WhatsApp.</p>
               </div>
               <button 
+                type="button"
                 onClick={() => setRemindersEnabled(!remindersEnabled)}
                 className={`w-12 h-6 rounded-full transition-colors relative ${remindersEnabled ? 'bg-zinc-900' : 'bg-stone-300'}`}
               >
@@ -50,6 +52,7 @@ const Notifications: React.FC = () => {
                 <p className="text-xs text-stone-500 font-light mt-1">Push em tempo real.</p>
               </div>
               <button 
+                type="button"
                 onClick={() => setProfAlertsEnabled(!profAlertsEnabled)}
                 className={`w-12 h-6 rounded-full transition-colors relative ${profAlertsEnabled ? 'bg-zinc-900' : 'bg-stone-300'}`}
               >
@@ -112,7 +115,12 @@ const Notifications: React.FC = () => {
             ))}
           </div>
           <div className="p-6 bg-stone-50 border-t border-stone-100 text-center">
-             <button className="text-xs font-bold uppercase tracking-widest text-zinc-900 hover:text-amber-600 transition-colors">Ver histórico completo</button>
+             <Link
+               to="/notifications/history"
+               className="inline-block text-xs font-bold uppercase tracking-widest text-zinc-900 hover:text-amber-600 transition-colors"
+             >
+               Ver histórico completo
+             </Link>
           </div>
         </div>
       </div>
