@@ -291,43 +291,130 @@ const LandingPage: React.FC = () => {
       <div className="py-32 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-serif text-zinc-900">Membership</h2>
-            <p className="mt-4 text-stone-500 font-light">Acesso exclusivo à plataforma completa.</p>
+            <h2 className="text-4xl font-serif text-zinc-900">Escolha o Plano Ideal</h2>
+            <p className="mt-4 text-stone-500 font-light">Planos flexíveis para salões de todos os tamanhos.</p>
           </div>
           
-          <div className="max-w-4xl mx-auto bg-zinc-950 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
-             <div className="p-12 md:w-1/2 flex flex-col justify-center border-b md:border-b-0 md:border-r border-white/10">
-                <h3 className="text-amber-500 text-sm font-bold uppercase tracking-[0.2em] mb-2">Perfect Salon Pro</h3>
-                <div className="flex items-baseline text-white mb-6">
-                  <span className="text-6xl font-serif">R$299</span>
-                  <span className="ml-2 text-stone-400 font-light">/mês</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {/* Starter Plan */}
+            <div className="bg-white rounded-2xl overflow-hidden shadow-lg border border-stone-200 flex flex-col">
+              <div className="p-8 flex flex-col flex-1">
+                <h3 className="text-stone-600 text-sm font-bold uppercase tracking-[0.2em] mb-2">Starter</h3>
+                <div className="flex items-baseline text-zinc-900 mb-4">
+                  <span className="text-5xl font-serif">R$149</span>
+                  <span className="ml-2 text-stone-500 font-light text-lg">/mês</span>
                 </div>
-                <p className="text-stone-400 font-light leading-relaxed mb-8">
-                  Tudo o que você precisa para automatizar sua recepção com classe e eficiência.
+                <p className="text-stone-600 font-light text-sm mb-6">
+                  Ideal para salões pequenos começando sua jornada digital.
                 </p>
-                <div className="flex space-x-4">
-                  <button 
-                     type="button"
-                     onClick={() => navigate('/signup')}
-                     className="flex-1 bg-white text-zinc-950 py-4 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-stone-200 transition-colors"
-                  >
-                    Tornar-se Membro
-                  </button>
-                  <Link to="/pricing" className="flex items-center justify-center px-6 py-4 border border-white/20 rounded-full text-xs font-bold uppercase tracking-widest text-white hover:bg-white/10 transition-colors">
-                     Detalhes
-                  </Link>
-                </div>
-             </div>
-             <div className="p-12 md:w-1/2 bg-zinc-900">
-                <ul className="space-y-6">
-                  {['Concierge WhatsApp Ilimitado', 'Até 6 Especialistas', 'Integração Google Calendar', 'Suite de Avaliações', 'Notificações Premium'].map((feat) => (
+                <ul className="space-y-4 mb-8 flex-1">
+                  {[
+                    'Concierge WhatsApp Ilimitado',
+                    'Até 3 Especialistas',
+                    'Integração Google Calendar',
+                    'Dashboard Básico',
+                    'Suite de Avaliações',
+                    'Suporte por Email'
+                  ].map((feat) => (
                     <li key={feat} className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-amber-500 mt-0.5 flex-shrink-0" />
-                      <p className="ml-4 text-stone-300 font-light">{feat}</p>
+                      <CheckCircle className="h-4 w-4 text-zinc-900 mt-1 flex-shrink-0" />
+                      <p className="ml-3 text-stone-600 font-light text-sm">{feat}</p>
                     </li>
                   ))}
                 </ul>
-             </div>
+                <button 
+                  type="button"
+                  onClick={() => navigate('/signup')}
+                  className="w-full bg-stone-200 text-zinc-900 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-stone-300 transition-colors"
+                >
+                  Assinar Agora
+                </button>
+              </div>
+            </div>
+
+            {/* Pro Plan - Featured */}
+            <div className="bg-zinc-950 rounded-2xl overflow-hidden shadow-2xl border-2 border-amber-500 flex flex-col relative">
+              <div className="absolute top-0 right-0 bg-amber-500 text-white px-4 py-1 text-xs font-bold uppercase tracking-widest">
+                Mais Popular
+              </div>
+              <div className="p-8 flex flex-col flex-1 pt-12">
+                <h3 className="text-amber-500 text-sm font-bold uppercase tracking-[0.2em] mb-2">Pro</h3>
+                <div className="flex items-baseline text-white mb-4">
+                  <span className="text-5xl font-serif">R$299</span>
+                  <span className="ml-2 text-stone-400 font-light text-lg">/mês</span>
+                </div>
+                <p className="text-stone-400 font-light text-sm mb-6">
+                  A escolha perfeita para salões em crescimento.
+                </p>
+                <ul className="space-y-4 mb-8 flex-1">
+                  {[
+                    'Concierge WhatsApp Ilimitado',
+                    'Até 6 Especialistas',
+                    'Integração Google Calendar',
+                    'Dashboard Avançado',
+                    'Suite de Avaliações',
+                    'Notificações Premium',
+                    'Suporte Prioritário'
+                  ].map((feat) => (
+                    <li key={feat} className="flex items-start">
+                      <CheckCircle className="h-4 w-4 text-amber-500 mt-1 flex-shrink-0" />
+                      <p className="ml-3 text-stone-300 font-light text-sm">{feat}</p>
+                    </li>
+                  ))}
+                </ul>
+                <button 
+                  type="button"
+                  onClick={() => navigate('/signup')}
+                  className="w-full bg-white text-zinc-950 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-stone-200 transition-colors shadow-lg"
+                >
+                  Assinar Agora
+                </button>
+              </div>
+            </div>
+
+            {/* Premium Plan */}
+            <div className="bg-white rounded-2xl overflow-hidden shadow-lg border border-stone-200 flex flex-col">
+              <div className="p-8 flex flex-col flex-1">
+                <h3 className="text-stone-600 text-sm font-bold uppercase tracking-[0.2em] mb-2">Premium</h3>
+                <div className="flex items-baseline text-zinc-900 mb-4">
+                  <span className="text-5xl font-serif">R$599</span>
+                  <span className="ml-2 text-stone-500 font-light text-lg">/mês</span>
+                </div>
+                <p className="text-stone-600 font-light text-sm mb-6">
+                  Para salões grandes que precisam de máxima capacidade.
+                </p>
+                <ul className="space-y-4 mb-8 flex-1">
+                  {[
+                    'Concierge WhatsApp Ilimitado',
+                    'Até 12 Especialistas',
+                    'Integração Google Calendar',
+                    'Dashboard Avançado',
+                    'Suite de Avaliações',
+                    'Notificações Premium',
+                    'Suporte Prioritário 24/7'
+                  ].map((feat) => (
+                    <li key={feat} className="flex items-start">
+                      <CheckCircle className="h-4 w-4 text-zinc-900 mt-1 flex-shrink-0" />
+                      <p className="ml-3 text-stone-600 font-light text-sm">{feat}</p>
+                    </li>
+                  ))}
+                </ul>
+                <button 
+                  type="button"
+                  onClick={() => navigate('/signup')}
+                  className="w-full bg-zinc-900 text-white py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors shadow-lg"
+                >
+                  Assinar Agora
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-stone-500 text-sm mb-4">14 dias de garantia ou seu dinheiro de volta em todos os planos.</p>
+            <Link to="/pricing" className="text-sm font-bold uppercase tracking-widest text-zinc-900 border-b border-zinc-900 pb-1 hover:text-amber-600 hover:border-amber-600 transition-colors">
+              Ver detalhes completos
+            </Link>
           </div>
         </div>
       </div>
