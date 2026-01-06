@@ -1,6 +1,6 @@
 import { useState, useId } from 'react';
 import { Clock, Plus, Trash2, X, Edit } from 'lucide-react';
-import type { Service, BusinessHours } from '../types';
+import type { Service, DaySchedule } from '../types';
 
 const initialServices: Service[] = [
   { id: '1', name: 'Corte Masculino Premium', description: 'Corte moderno com técnicas profissionais e acabamento impecável.', price: 80, durationMinutes: 45, professionalIds: ['2'] },
@@ -16,19 +16,18 @@ const mockProfessionals = [
   { id: '3', name: 'Mariana Lima' },
 ];
 
-const mockSchedule: BusinessHours = {
+const daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+const initialDaySchedules: DaySchedule[] = daysOfWeek.map((day) => ({
+  day,
+  enabled: day !== 'Dom',
   open: '09:00',
   close: '19:00',
   lunchStart: '12:00',
   lunchEnd: '13:00',
-  days: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
-};
+}));
 
 const Services: React.FC = () => {
-  const openTimeId = useId();
-  const closeTimeId = useId();
-  const lunchStartId = useId();
-  const lunchEndId = useId();
   const serviceNameId = useId();
   const serviceDescriptionId = useId();
   const servicePriceId = useId();
@@ -42,6 +41,7 @@ const Services: React.FC = () => {
   const [newServicePrice, setNewServicePrice] = useState<number>(0);
   const [newServiceDuration, setNewServiceDuration] = useState<number>(30);
   const [selectedProfessionalIds, setSelectedProfessionalIds] = useState<string[]>([]);
+  const [daySchedules, setDaySchedules] = useState<DaySchedule[]>(initialDaySchedules);
 
   const resetForm = () => {
     setNewServiceName('');
@@ -115,6 +115,32 @@ const Services: React.FC = () => {
         ? prev.filter(id => id !== professionalId)
         : [...prev, professionalId]
     );
+  };
+
+  const handleToggleDay = (day: string) => {
+    setDaySchedules(prev =>
+      prev.map(schedule =>
+        schedule.day === day
+          ? { ...schedule, enabled: !schedule.enabled }
+          : schedule
+      )
+    );
+  };
+
+  const handleUpdateDaySchedule = (day: string, field: keyof DaySchedule, value: string | boolean) => {
+    setDaySchedules(prev =>
+      prev.map(schedule =>
+        schedule.day === day
+          ? { ...schedule, [field]: value }
+          : schedule
+      )
+    );
+  };
+
+  const handleSaveSchedule = () => {
+    // Aqui você pode salvar os horários no backend
+    console.log('Horários salvos:', daySchedules);
+    // Pode adicionar uma notificação de sucesso aqui
   };
 
   return (
@@ -201,77 +227,119 @@ const Services: React.FC = () => {
          <div className="flex justify-between items-center mb-6">
           <div>
             <h2 className="text-2xl font-serif text-zinc-900">Horário de Funcionamento</h2>
-            <p className="text-stone-500 font-light">Disponibilidade geral do estabelecimento.</p>
+            <p className="text-stone-500 font-light">Configure horários individuais para cada dia da semana.</p>
           </div>
-          <button type="button" className="text-zinc-900 text-xs font-bold uppercase tracking-widest hover:text-amber-600 border-b border-zinc-200 pb-1">
+          <button 
+            type="button" 
+            onClick={handleSaveSchedule}
+            className="text-zinc-900 text-xs font-bold uppercase tracking-widest hover:text-amber-600 border-b border-zinc-200 pb-1"
+          >
             Salvar Alterações
           </button>
         </div>
 
         <div className="bg-white p-8 rounded-xl shadow-sm border border-stone-200">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div>
-              <div className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-4">Dias de Operação</div>
-              <div className="flex flex-wrap gap-2">
-                {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((day) => (
-                  <button
-                    key={day}
-                    type="button"
-                    className={`px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-wide transition-all ${
-                      mockSchedule.days.includes(day)
-                        ? 'bg-zinc-900 text-white shadow-md'
-                        : 'bg-stone-100 text-stone-400 hover:bg-stone-200'
-                    }`}
-                  >
-                    {day}
-                  </button>
-                ))}
-              </div>
-            </div>
+          <div className="space-y-6">
+            {daySchedules.map((schedule) => {
+              const dayKey = schedule.day.toLowerCase();
+              const openId = `open-${dayKey}`;
+              const closeId = `close-${dayKey}`;
+              const lunchStartId = `lunch-start-${dayKey}`;
+              const lunchEndId = `lunch-end-${dayKey}`;
 
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                   <label htmlFor={openTimeId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Abertura</label>
-                   <input 
-                      id={openTimeId}
-                      type="time" 
-                      defaultValue={mockSchedule.open}
-                      className="block w-full rounded-lg border-stone-200 shadow-sm focus:border-zinc-900 focus:ring-zinc-900 bg-stone-50 text-stone-800 p-3"
-                   />
+              return (
+                <div 
+                  key={schedule.day} 
+                  className={`p-6 rounded-lg border-2 transition-all ${
+                    schedule.enabled 
+                      ? 'border-zinc-900 bg-stone-50' 
+                      : 'border-stone-200 bg-stone-50/50 opacity-60'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <button
+                      type="button"
+                      onClick={() => handleToggleDay(schedule.day)}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all ${
+                        schedule.enabled
+                          ? 'bg-zinc-900 text-white shadow-md hover:bg-zinc-800'
+                          : 'bg-stone-100 text-stone-400 hover:bg-stone-200'
+                      }`}
+                    >
+                      {schedule.day}
+                    </button>
+                    <label className="flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={schedule.enabled}
+                        onChange={() => handleToggleDay(schedule.day)}
+                        className="rounded border-stone-300 text-zinc-900 focus:ring-zinc-900"
+                      />
+                      <span className="ml-2 text-xs font-bold uppercase tracking-widest text-stone-500">
+                        Ativo
+                      </span>
+                    </label>
+                  </div>
+
+                  {schedule.enabled && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label htmlFor={openId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
+                            Abertura
+                          </label>
+                          <input
+                            id={openId}
+                            type="time"
+                            value={schedule.open}
+                            onChange={(e) => handleUpdateDaySchedule(schedule.day, 'open', e.target.value)}
+                            className="block w-full rounded-lg border-stone-200 shadow-sm focus:border-zinc-900 focus:ring-zinc-900 bg-white text-stone-800 p-3"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor={closeId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
+                            Fechamento
+                          </label>
+                          <input
+                            id={closeId}
+                            type="time"
+                            value={schedule.close}
+                            onChange={(e) => handleUpdateDaySchedule(schedule.day, 'close', e.target.value)}
+                            className="block w-full rounded-lg border-stone-200 shadow-sm focus:border-zinc-900 focus:ring-zinc-900 bg-white text-stone-800 p-3"
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label htmlFor={lunchStartId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
+                            Início Pausa
+                          </label>
+                          <input
+                            id={lunchStartId}
+                            type="time"
+                            value={schedule.lunchStart}
+                            onChange={(e) => handleUpdateDaySchedule(schedule.day, 'lunchStart', e.target.value)}
+                            className="block w-full rounded-lg border-stone-200 shadow-sm focus:border-zinc-900 focus:ring-zinc-900 bg-white text-stone-800 p-3"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor={lunchEndId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">
+                            Fim Pausa
+                          </label>
+                          <input
+                            id={lunchEndId}
+                            type="time"
+                            value={schedule.lunchEnd}
+                            onChange={(e) => handleUpdateDaySchedule(schedule.day, 'lunchEnd', e.target.value)}
+                            className="block w-full rounded-lg border-stone-200 shadow-sm focus:border-zinc-900 focus:ring-zinc-900 bg-white text-stone-800 p-3"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div>
-                   <label htmlFor={closeTimeId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Fechamento</label>
-                   <input 
-                      id={closeTimeId}
-                      type="time" 
-                      defaultValue={mockSchedule.close}
-                      className="block w-full rounded-lg border-stone-200 shadow-sm focus:border-zinc-900 focus:ring-zinc-900 bg-stone-50 text-stone-800 p-3"
-                   />
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-6">
-                 <div>
-                   <label htmlFor={lunchStartId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Início Pausa</label>
-                   <input 
-                      id={lunchStartId}
-                      type="time" 
-                      defaultValue={mockSchedule.lunchStart}
-                      className="block w-full rounded-lg border-stone-200 shadow-sm focus:border-zinc-900 focus:ring-zinc-900 bg-stone-50 text-stone-800 p-3"
-                   />
-                </div>
-                <div>
-                   <label htmlFor={lunchEndId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Fim Pausa</label>
-                   <input 
-                      id={lunchEndId}
-                      type="time" 
-                      defaultValue={mockSchedule.lunchEnd}
-                      className="block w-full rounded-lg border-stone-200 shadow-sm focus:border-zinc-900 focus:ring-zinc-900 bg-stone-50 text-stone-800 p-3"
-                   />
-                </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
       </section>

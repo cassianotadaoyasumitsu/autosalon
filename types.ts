@@ -44,12 +44,22 @@ export enum ConnectionStatus {
   PENDING = 'PENDING',
 }
 
+export interface DaySchedule {
+  day: string;
+  enabled: boolean;
+  open: string;
+  close: string;
+  lunchStart: string;
+  lunchEnd: string;
+}
+
 export interface BusinessHours {
   open: string;
   close: string;
   lunchStart: string;
   lunchEnd: string;
   days: string[];
+  daySchedules?: DaySchedule[];
 }
 
 export interface Review {
