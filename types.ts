@@ -25,6 +25,7 @@ export interface SalonConfig {
 export interface Service {
   id: string;
   name: string;
+  description?: string;
   price: number;
   durationMinutes: number;
   professionalIds: string[];
