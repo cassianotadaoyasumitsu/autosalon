@@ -20,6 +20,7 @@ import Notifications from './pages/Notifications';
 import NotificationHistory from './pages/NotificationHistory';
 import ProfessionalSetup from './pages/ProfessionalSetup';
 import CalendarView from './pages/CalendarView';
+import FeedbackPage from './pages/FeedbackPage';
 import { Menu } from 'lucide-react';
 
 // Define props for ProtectedLayout
@@ -78,6 +79,9 @@ const AppRoutes: React.FC = () => {
       
       {/* Professional Invite/Setup Route - Public access with token */}
       <Route path="/setup" element={<ProfessionalSetup />} />
+      
+      {/* Feedback Route - Public access with token */}
+      <Route path="/feedback" element={<FeedbackPage />} />
 
       {/* Protected Application Routes */}
       <Route path="/dashboard" element={<ProtectedLayout><Dashboard /></ProtectedLayout>} />
