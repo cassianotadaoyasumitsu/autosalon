@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Mail, Plus, Trash2, Copy, Check, Star, X, Link as LinkIcon, AlertCircle } from 'lucide-react';
-import { Professional } from '../types';
+import { useState, useId } from 'react';
+import { Mail, Plus, Trash2, Copy, Check, Star, X, Link as LinkIcon, Upload, Image as ImageIcon } from 'lucide-react';
+import type { Professional } from '../types';
 
 const initialProfessionals: Professional[] = [
   {
@@ -48,6 +48,12 @@ const Professionals: React.FC = () => {
   const [newProfName, setNewProfName] = useState('');
   const [newProfEmail, setNewProfEmail] = useState('');
   const [newProfSpecialty, setNewProfSpecialty] = useState('');
+  const [newProfPhoto, setNewProfPhoto] = useState<string | null>(null);
+  
+  const photoInputId = useId();
+  const nameInputId = useId();
+  const emailInputId = useId();
+  const specialtyInputId = useId();
 
   const handleCopyInvite = (inviteToken: string | undefined, id: string) => {
     if(!inviteToken) return;
@@ -57,6 +63,38 @@ const Professionals: React.FC = () => {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validar tipo de arquivo
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor, selecione uma imagem válida');
+        return;
+      }
+      
+      // Validar tamanho (máximo 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('A imagem deve ter no máximo 5MB');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewProfPhoto(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemovePhoto = () => {
+    setNewProfPhoto(null);
+    // Resetar o input file
+    const input = document.getElementById(photoInputId) as HTMLInputElement;
+    if (input) {
+      input.value = '';
+    }
+  };
+
   const handleAddProfessional = () => {
     const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     const newProf: Professional = {
@@ -64,7 +102,7 @@ const Professionals: React.FC = () => {
       name: newProfName,
       email: newProfEmail,
       specialty: newProfSpecialty,
-      photoUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(newProfName)}&background=random`,
+      photoUrl: newProfPhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(newProfName)}&background=random`,
       calendarConnected: false,
       status: 'PENDING_SETUP',
       inviteToken: token
@@ -74,6 +112,15 @@ const Professionals: React.FC = () => {
     setNewProfName('');
     setNewProfEmail('');
     setNewProfSpecialty('');
+    setNewProfPhoto(null);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setNewProfName('');
+    setNewProfEmail('');
+    setNewProfSpecialty('');
+    setNewProfPhoto(null);
   };
 
   return (
@@ -84,6 +131,7 @@ const Professionals: React.FC = () => {
           <p className="text-stone-500 font-light mt-1">Gestão de especialistas e sincronização de agendas.</p>
         </div>
         <button 
+          type="button"
           onClick={() => setIsModalOpen(true)}
           className="mt-4 sm:mt-0 flex items-center bg-zinc-900 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition shadow-md"
         >
@@ -140,6 +188,7 @@ const Professionals: React.FC = () => {
                        </div>
                     ) : (
                       <button 
+                        type="button"
                         onClick={() => handleCopyInvite(prof.inviteToken, prof.id)}
                         className={`w-full flex items-center justify-center px-4 py-3 border rounded-lg text-xs font-bold uppercase tracking-widest transition-colors ${
                           copiedId === prof.id 
@@ -159,7 +208,7 @@ const Professionals: React.FC = () => {
             </div>
             
             <div className="bg-stone-50 px-6 py-3 border-t border-stone-100 flex justify-end">
-               <button className="text-stone-400 hover:text-red-800 transition-colors">
+               <button type="button" className="text-stone-400 hover:text-red-800 transition-colors">
                  <Trash2 className="w-4 h-4" />
                </button>
             </div>
@@ -173,14 +222,62 @@ const Professionals: React.FC = () => {
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-fade-in border border-stone-200">
             <div className="px-8 py-6 border-b border-stone-100 flex justify-between items-center bg-stone-50">
               <h3 className="font-serif text-xl text-zinc-900">Adicionar Especialista</h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-stone-400 hover:text-zinc-900">
+              <button type="button" onClick={handleCloseModal} className="text-stone-400 hover:text-zinc-900">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="p-8 space-y-5">
+              {/* Foto do Profissional */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Nome Completo</label>
+                <div className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Foto do Profissional</div>
+                <div className="flex items-center gap-4">
+                  <div className="flex-shrink-0">
+                    {newProfPhoto ? (
+                      <div className="relative">
+                        <img
+                          src={newProfPhoto}
+                          alt="Preview"
+                          className="w-20 h-20 rounded-full object-cover border-2 border-stone-200"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleRemovePhoto}
+                          className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
+                          title="Remover foto"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="w-20 h-20 rounded-full bg-stone-100 border-2 border-stone-200 flex items-center justify-center">
+                        <ImageIcon className="w-8 h-8 text-stone-400" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <label
+                      htmlFor={photoInputId}
+                      className="flex items-center justify-center gap-2 px-4 py-2 border-2 border-dashed border-stone-300 rounded-lg cursor-pointer hover:border-zinc-900 hover:bg-stone-50 transition text-sm text-stone-600 font-medium"
+                    >
+                      <Upload className="w-4 h-4" />
+                      {newProfPhoto ? 'Trocar Foto' : 'Selecionar Foto'}
+                    </label>
+                    <input
+                      id={photoInputId}
+                      type="file"
+                      accept="image/*"
+                      onChange={handlePhotoChange}
+                      className="hidden"
+                    />
+                    <p className="text-xs text-stone-400 mt-1">JPG, PNG ou GIF (máx. 5MB)</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor={nameInputId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Nome Completo</label>
                 <input 
+                  id={nameInputId}
                   type="text" 
                   className="w-full rounded-lg border-stone-200 p-3 text-stone-800 focus:border-zinc-900 focus:ring-zinc-900"
                   value={newProfName}
@@ -189,8 +286,9 @@ const Professionals: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Email Google</label>
+                <label htmlFor={emailInputId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Email Google</label>
                 <input 
+                  id={emailInputId}
                   type="email" 
                   className="w-full rounded-lg border-stone-200 p-3 text-stone-800 focus:border-zinc-900 focus:ring-zinc-900"
                   value={newProfEmail}
@@ -199,8 +297,9 @@ const Professionals: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Especialidade</label>
+                <label htmlFor={specialtyInputId} className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Especialidade</label>
                 <input 
+                  id={specialtyInputId}
                   type="text" 
                   className="w-full rounded-lg border-stone-200 p-3 text-stone-800 focus:border-zinc-900 focus:ring-zinc-900"
                   value={newProfSpecialty}
@@ -214,12 +313,14 @@ const Professionals: React.FC = () => {
             </div>
             <div className="px-8 py-6 bg-stone-50 border-t border-stone-100 flex justify-end space-x-3">
               <button 
-                onClick={() => setIsModalOpen(false)}
+                type="button"
+                onClick={handleCloseModal}
                 className="px-6 py-3 text-stone-500 text-xs font-bold uppercase tracking-widest hover:text-zinc-900 transition"
               >
                 Cancelar
               </button>
               <button 
+                type="button"
                 onClick={handleAddProfessional}
                 disabled={!newProfName || !newProfEmail}
                 className="px-6 py-3 bg-zinc-900 text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-zinc-800 transition disabled:opacity-50"
