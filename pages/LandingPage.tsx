@@ -267,14 +267,14 @@ const LandingPage: React.FC = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {testimonials.map((t) => (
-              <div key={t.id} className="bg-white p-10 shadow-xl shadow-stone-200/50 rounded-none border-l-4 border-amber-500">
+              <div key={t.id} className="bg-white p-10 shadow-xl shadow-stone-200/50 rounded-none border-l-4 border-amber-500 flex flex-col h-full">
                 <div className="flex items-center mb-6 text-amber-500">
                   {[...Array(5)].map((_, i) => (
                     <Star key={`${t.id}-star-${i}`} className="w-4 h-4 fill-current" />
                   ))}
                 </div>
-                <p className="text-stone-700 mb-8 font-light italic text-lg leading-relaxed">"{t.content}"</p>
-                <div className="flex items-center">
+                <p className="text-stone-700 mb-8 font-light italic text-lg leading-relaxed flex-1">"{t.content}"</p>
+                <div className="flex items-center mt-auto">
                   <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full mr-4 grayscale" />
                   <div>
                     <h4 className="font-bold text-zinc-900 text-sm uppercase tracking-wider">{t.name}</h4>
